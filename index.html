@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Total Vision California — Official Locations</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+      --bg-primary: #eef2f5;
+      --text-primary: #1a2c3e;
+      --text-secondary: #4a627a;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-border: rgba(255,255,255,0.6);
+      --btn-bg: white;
+      --btn-border: #cbdcec;
+      --btn-text: #1e4663;
+      --btn-active: #1c6fb0;
+      --item-bg: #f8fafd;
+      --item-hover: #e5f0ff;
+      --item-border: #e2edf7;
+      --shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+      --label-bg: linear-gradient(135deg, rgba(20, 50, 75, 0.94), rgba(10, 35, 55, 0.96));
+      --label-border: rgba(255, 215, 150, 0.7);
+      --search-bg: white;
+      --search-border: #cbdcec;
+      --search-text: #1a2c3e;
+    }
+
+    body.dark {
+      --bg-primary: #121826;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --card-bg: rgba(30, 41, 59, 0.94);
+      --card-border: rgba(71, 85, 105, 0.6);
+      --btn-bg: #1e293b;
+      --btn-border: #334155;
+      --btn-text: #cbd5e1;
+      --btn-active: #3b82f6;
+      --item-bg: #0f172a;
+      --item-hover: #1e293b;
+      --item-border: #334155;
+      --shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
+      --label-bg: linear-gradient(135deg, rgba(15, 25, 45, 0.96), rgba(5, 15, 30, 0.98));
+      --label-border: rgba(251, 191, 36, 0.6);
+      --search-bg: #1e293b;
+      --search-border: #334155;
+      --search-text: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      background: var(--bg-primary);
+      padding: 20px;
+      color: var(--text-primary);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, var(--btn-active), #0a2b44);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .subhead {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn, .action-btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      padding: 7px 18px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--btn-text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-btn.active {
+      background: var(--btn-active);
+      color: white;
+      border-color: var(--btn-active);
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      background: var(--search-bg);
+      border: 1px solid var(--search-border);
+      border-radius: 50px;
+      padding: 8px 18px;
+      width: 280px;
+      font-size: 0.85rem;
+      color: var(--search-text);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-box:focus {
+      border-color: var(--btn-active);
+      box-shadow: 0 0 0 2px rgba(28,111,176,0.2);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .stats {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .map-wrapper {
+      flex: 3;
+      min-width: 260px;
+      height: 68vh;
+      min-height: 520px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #1a2634;
+      border: 1px solid var(--card-border);
+      position: relative;
+    }
+
+    .map-fullscreen-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      padding: 8px 14px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--btn-text);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-fullscreen-btn:hover {
+      background: var(--btn-active);
+      color: white;
+      border-color: var(--btn-active);
+    }
+
+    .map-wrapper.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sidebar {
+      flex: 1;
+      min-width: 280px;
+      background: var(--card-bg);
+      backdrop-filter: blur(2px);
+      border-radius: 28px;
+      padding: 16px 12px;
+      box-shadow: var(--shadow);
+      overflow-y: auto;
+      max-height: 68vh;
+      border: 1px solid var(--card-border);
+    }
+
+    .sidebar h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      padding-left: 8px;
+      border-left: 4px solid var(--btn-active);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .location-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .location-item {
+      background: var(--item-bg);
+      padding: 8px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid var(--item-border);
+    }
+
+    .location-item:hover {
+      background: var(--item-hover);
+      transform: translateX(4px);
+    }
+
+    .location-item.active {
+      background: var(--btn-active);
+      color: white;
+    }
+
+    .location-name {
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .location-address {
+      font-size: 0.65rem;
+      opacity: 0.75;
+      margin-top: 3px;
+    }
+
+    .region-badge-sm {
+      font-size: 0.6rem;
+      background: var(--item-border);
+      padding: 2px 6px;
+      border-radius: 20px;
+      color: var(--text-primary);
+    }
+
+    .location-item.active .region-badge-sm {
+      background: rgba(255,255,240,0.3);
+      color: white;
+    }
+
+    .smart-label {
+      background: var(--label-bg);
+      backdrop-filter: blur(8px);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--label-border);
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      pointer-events: auto;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      z-index: 1000;
+    }
+    
+    .smart-label:hover {
+      transform: scale(1.02);
+    }
+    
+    .smart-label strong {
+      font-weight: 800;
+      color: #ffdd99;
+      margin-right: 3px;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+    
+    @media (max-width: 780px) {
+      body {
+        padding: 10px;
+      }
+      .map-wrapper {
+        height: 50vh;
+      }
+      .smart-label {
+        font-size: 8px;
+        padding: 2px 6px;
+      }
+      .filter-btn, .action-btn {
+        padding: 5px 12px;
+        font-size: 0.7rem;
+      }
+      .map-fullscreen-btn {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        bottom: 12px;
+        right: 12px;
+      }
+      .search-box {
+        width: 220px;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+      }
+    }
+    
+    .attribution {
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📍 Total Vision · California</h1>
+  <div class="subhead">🏥 47 Official Locations — NorCal (11) + SoCal (36)</div>
+  
+  <div class="controls">
+    <button class="filter-btn active" data-region="all">✨ All (47)</button>
+    <button class="filter-btn" data-region="norcal">🌲 NorCal (11)</button>
+    <button class="filter-btn" data-region="socal">☀️ SoCal (36)</button>
+    <button id="themeToggleBtn" class="action-btn">🌙 Dark Mode</button>
+  </div>
+  
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city or location name...">
+  </div>
+  
+  <div class="stats" id="statsDisplay">📍 47 Total Vision locations — Search enabled</div>
+
+  <div class="container">
+    <div class="map-wrapper" id="mapWrapper">
+      <div id="map"></div>
+      <button id="mapFullscreenBtn" class="map-fullscreen-btn">⛶ Fullscreen Map</button>
+    </div>
+    <div class="sidebar">
+      <h3>📋 Total Vision Clinics <span id="sidebarCount"></span></h3>
+      <div class="location-list" id="locationList"></div>
+    </div>
+  </div>
+  <div class="attribution">✓ Source: https://yourtotalvision.com/ | syfx © 2026</div>
+
+  <script>
+    // ============================================================
+    // FINAL LOCATIONS - San Francisco (20th Ave) REMOVED
+    // NorCal: 11 locations | SoCal: 36 locations | Total: 47
+    // ============================================================
+    const locations = [
+      // ==================== NORTHERN CALIFORNIA (11) - San Francisco (20th Ave) REMOVED ====================
+      { name: "Total Vision Novato", address: "1730 Novato Blvd Ste C, Novato, CA 94947", lat: 38.1074, lng: -122.5697, region: "norcal", city: "Novato" },
+      { name: "Total Vision Richmond", address: "5515 Geary Blvd, San Francisco, CA 94121", lat: 37.7801, lng: -122.4811, region: "norcal", city: "San Francisco" },
+      { name: "Total Vision Financial District", address: "530 Bush St #101, San Francisco, CA 94108", lat: 37.7908, lng: -122.4065, region: "norcal", city: "San Francisco" },
+      { name: "Total Vision Hercules", address: "1375 Sycamore Ave #150E, Hercules, CA 94547", lat: 38.0167, lng: -122.2886, region: "norcal", city: "Hercules" },
+      { name: "Total Vision Pleasanton", address: "6155 Stoneridge Dr #100, Pleasanton, CA 94588", lat: 37.6944, lng: -121.9012, region: "norcal", city: "Pleasanton" },
+      { name: "Total Vision Santa Clara", address: "2366 El Camino Real #5, Santa Clara, CA 95050", lat: 37.3515, lng: -121.9629, region: "norcal", city: "Santa Clara" },
+      { name: "Total Vision Campbell", address: "338 E Hamilton Ave, Campbell, CA 95008", lat: 37.2931, lng: -121.9441, region: "norcal", city: "Campbell" },
+      { name: "Total Vision Willow Glen", address: "3021 Meridian Ave, San Jose, CA 95124", lat: 37.2782, lng: -121.9058, region: "norcal", city: "San Jose" },
+      { name: "Total Vision Los Gatos", address: "233 N Santa Cruz Ave, Los Gatos, CA 95030", lat: 37.2234, lng: -121.9822, region: "norcal", city: "Los Gatos" },
+      { name: "Total Vision Golden Hills", address: "2690 S White Rd #255, San Jose, CA 95148", lat: 37.2845, lng: -121.8003, region: "norcal", city: "San Jose" },
+      { name: "Total Vision Santa Cruz", address: "904 Cedar St, Santa Cruz, CA 95060", lat: 36.9749, lng: -122.0288, region: "norcal", city: "Santa Cruz" },
+      
+      // ==================== SOUTHERN CALIFORNIA (36) ====================
+      { name: "Total Vision Camarillo", address: "2380 Las Posas Rd #C, Camarillo, CA 93010", lat: 34.2255, lng: -119.0479, region: "socal", city: "Camarillo" },
+      { name: "Total Vision West Hollywood", address: "8205 Santa Monica Blvd #15, West Hollywood, CA 90046", lat: 34.0905, lng: -118.3655, region: "socal", city: "West Hollywood" },
+      { name: "Total Vision Pasadena", address: "1 W California Blvd #513, Pasadena, CA 91105", lat: 34.1461, lng: -118.1517, region: "socal", city: "Pasadena" },
+      { name: "Total Vision Diamond Bar", address: "718 N Diamond Bar Blvd, Diamond Bar, CA 91765", lat: 34.0281, lng: -117.8151, region: "socal", city: "Diamond Bar" },
+      { name: "Total Vision Riverside", address: "4515 Central Ave #101, Riverside, CA 92506", lat: 33.9489, lng: -117.3892, region: "socal", city: "Riverside" },
+      { name: "Total Vision Chino Hills", address: "2581 Chino Hills Pkwy, Chino Hills, CA 91709", lat: 33.9774, lng: -117.7473, region: "socal", city: "Chino Hills" },
+      { name: "Total Vision Little Tokyo", address: "334-B E 2nd St, Los Angeles, CA 90012", lat: 34.0491, lng: -118.2419, region: "socal", city: "Los Angeles" },
+      { name: "Total Vision Culver City", address: "12461 W Washington Blvd, Los Angeles, CA 90066", lat: 33.9981, lng: -118.4138, region: "socal", city: "Los Angeles" },
+      { name: "Total Vision Long Beach", address: "2280 E Carson St, Long Beach, CA 90807", lat: 33.8301, lng: -118.1927, region: "socal", city: "Long Beach" },
+      { name: "Total Vision Seal Beach", address: "1190 Pacific Coast Hwy #E, Seal Beach, CA 90740", lat: 33.7416, lng: -118.1026, region: "socal", city: "Seal Beach" },
+      { name: "Total Vision Huntington Beach", address: "5092 Warner Ave, Huntington Beach, CA 92649", lat: 33.7151, lng: -118.0453, region: "socal", city: "Huntington Beach" },
+      { name: "Total Vision Fountain Valley", address: "9107 Garfield Ave, Fountain Valley, CA 92708", lat: 33.7083, lng: -117.9447, region: "socal", city: "Fountain Valley" },
+      { name: "Total Vision Laguna Crown Valley", address: "30030 Town Center Dr, Laguna Niguel, CA 92677", lat: 33.5534, lng: -117.7141, region: "socal", city: "Laguna Niguel" },
+      { name: "Total Vision San Clemente", address: "140 Avenida Del Mar, San Clemente, CA 92672", lat: 33.4258, lng: -117.6148, region: "socal", city: "San Clemente" },
+      { name: "Total Vision RSM", address: "30212 Tomas #170, Rancho Santa Margarita, CA 92688", lat: 33.6378, lng: -117.6052, region: "socal", city: "Rancho Santa Margarita" },
+      { name: "Total Vision Ladera Ranch", address: "333 Corporate Dr #120, Ladera Ranch, CA 92694", lat: 33.5718, lng: -117.6398, region: "socal", city: "Ladera Ranch" },
+      { name: "Total Vision Laguna La Paz", address: "27451B La Paz Rd, Laguna Niguel, CA 92677", lat: 33.5673, lng: -117.7049, region: "socal", city: "Laguna Niguel" },
+      { name: "Total Vision Talega", address: "1001 Avenida Pico #A, San Clemente, CA 92673", lat: 33.4589, lng: -117.6209, region: "socal", city: "San Clemente" },
+      { name: "Total Vision Lake Elsinore", address: "32245 Mission Trail #D4, Lake Elsinore, CA 92530", lat: 33.6731, lng: -117.3165, region: "socal", city: "Lake Elsinore" },
+      { name: "Total Vision La Quinta", address: "78015 Main St #107, La Quinta, CA 92253", lat: 33.6729, lng: -116.3047, region: "socal", city: "La Quinta" },
+      { name: "Total Vision Carlsbad Plaza", address: "2540 El Camino Real #B, Carlsbad, CA 92008", lat: 33.1258, lng: -117.2686, region: "socal", city: "Carlsbad" },
+      { name: "Total Vision Carlsbad", address: "3144 El Camino Real #202, Carlsbad, CA 92008", lat: 33.1271, lng: -117.2691, region: "socal", city: "Carlsbad" },
+      { name: "Total Vision Encinitas", address: "1454 Encinitas Blvd, Encinitas, CA 92024", lat: 33.0461, lng: -117.2588, region: "socal", city: "Encinitas" },
+      { name: "Total Vision Solana Beach", address: "665 San Rodolfo Dr #119, Solana Beach, CA 92075", lat: 32.9868, lng: -117.2575, region: "socal", city: "Solana Beach" },
+      { name: "Total Vision Del Mar", address: "12880 Carmel Country Rd #D110, San Diego, CA 92130", lat: 32.9459, lng: -117.2218, region: "socal", city: "San Diego" },
+      { name: "Total Vision UTC – Regents", address: "7770 Regents Rd #104, San Diego, CA 92122", lat: 32.8643, lng: -117.2274, region: "socal", city: "San Diego" },
+      { name: "Total Vision Mira Mesa", address: "8230 Mira Mesa Blvd #B, San Diego, CA 92126", lat: 32.9155, lng: -117.1464, region: "socal", city: "San Diego" },
+      { name: "Total Vision Tierrasanta", address: "5990 Santo Rd, San Diego, CA 92124", lat: 32.8231, lng: -117.1026, region: "socal", city: "San Diego" },
+      { name: "Total Vision Rancho Bernardo", address: "11717 Bernardo Plaza Ct #105, San Diego, CA 92128", lat: 33.0359, lng: -117.0845, region: "socal", city: "San Diego" },
+      { name: "Total Vision El Cajon", address: "1093 E Main St, El Cajon, CA 92021", lat: 32.7965, lng: -116.9338, region: "socal", city: "El Cajon" },
+      { name: "Total Vision La Mesa", address: "7090 Parkway Dr #A, La Mesa, CA 91942", lat: 32.7693, lng: -117.0202, region: "socal", city: "La Mesa" },
+      { name: "Total Vision Lemon Grove", address: "7850 Broadway, Lemon Grove, CA 91945", lat: 32.7419, lng: -117.0321, region: "socal", city: "Lemon Grove" },
+      { name: "Total Vision Eastlake", address: "890 Eastlake Pkwy #102, Chula Vista, CA 91914", lat: 32.6405, lng: -117.0053, region: "socal", city: "Chula Vista" },
+      { name: "Total Vision Bonita", address: "180 Otay Lakes Rd #201, Bonita, CA 91902", lat: 32.6503, lng: -117.0076, region: "socal", city: "Bonita" },
+      { name: "Total Vision Terra Nova", address: "374 E H St #1708, Chula Vista, CA 91910", lat: 32.6344, lng: -117.0867, region: "socal", city: "Chula Vista" },
+      { name: "Total Vision Sports Arena", address: "3750 Sports Arena Blvd #9, San Diego, CA 92110", lat: 32.7524, lng: -117.2091, region: "socal", city: "San Diego" }
+    ];
+
+    let map;
+    let currentFilter = 'all';
+    let currentSearchTerm = '';
+    let markersLayer = L.layerGroup();
+    let labelsLayer = L.layerGroup();
+    let labelObjects = [];
+    let updateTimeout = null;
+    let isMapFullscreen = false;
+
+    function getFilteredLocations() {
+      let filtered = locations.filter(loc => currentFilter === 'all' || loc.region === currentFilter);
+      
+      // Apply search filter
+      if (currentSearchTerm.trim() !== '') {
+        const term = currentSearchTerm.toLowerCase().trim();
+        filtered = filtered.filter(loc => 
+          loc.name.toLowerCase().includes(term) || 
+          loc.city.toLowerCase().includes(term) ||
+          loc.address.toLowerCase().includes(term)
+        );
+      }
+      
+      return filtered;
+    }
+
+    // Smart label collision avoidance
+    function updateLabelPositions() {
+      if (!map) return;
+      const zoom = map.getZoom();
+      const bounds = map.getBounds();
+      const mapContainer = map.getContainer();
+      const mapWidth = mapContainer.clientWidth;
+      const mapHeight = mapContainer.clientHeight;
+      
+      const visibleLabels = labelObjects.filter(item => bounds.contains(item.latLng));
+      if (visibleLabels.length === 0) return;
+      
+      const baseOffset = Math.max(14, Math.min(34, 22 - (zoom - 5) * 0.9));
+      const candidates = [
+        { dx: baseOffset, dy: -baseOffset - 6 },
+        { dx: -baseOffset, dy: -baseOffset - 6 },
+        { dx: baseOffset, dy: baseOffset + 4 },
+        { dx: -baseOffset, dy: baseOffset + 4 },
+        { dx: 0, dy: -baseOffset - 10 },
+        { dx: 0, dy: baseOffset + 6 }
+      ];
+      
+      const itemsWithPos = visibleLabels.map(item => {
+        const point = map.latLngToContainerPoint(item.latLng);
+        const textLen = item.location.name.length;
+        const width = Math.min(140, Math.max(80, textLen * 5.5 + 30));
+        return { item, point, selectedOffset: null, width, height: 26 };
+      });
+      
+      const placedRects = [];
+      for (let i = 0; i < itemsWithPos.length; i++) {
+        const current = itemsWithPos[i];
+        let bestCandidate = null;
+        let bestOverlap = Infinity;
+        
+        for (let cand of candidates) {
+          const testX = current.point.x + cand.dx;
+          const testY = current.point.y + cand.dy;
+          const testRect = { x: testX - current.width/2, y: testY - 12, w: current.width, h: 26 };
+          if (testRect.x < 5 || testRect.x + testRect.w > mapWidth - 5 || testRect.y < 5 || testRect.y + 26 > mapHeight - 5) continue;
+          
+          let totalOverlap = 0;
+          for (let placed of placedRects) {
+            const overlapX = Math.max(0, Math.min(testRect.x + testRect.w, placed.x + placed.w) - Math.max(testRect.x, placed.x));
+            const overlapY = Math.max(0, Math.min(testRect.y + testRect.h, placed.y + placed.h) - Math.max(testRect.y, placed.y));
+            totalOverlap += overlapX * overlapY;
+          }
+          if (totalOverlap < bestOverlap) {
+            bestOverlap = totalOverlap;
+            bestCandidate = { dx: cand.dx, dy: cand.dy, rect: testRect };
+          }
+        }
+        if (bestCandidate) {
+          current.selectedOffset = bestCandidate;
+          placedRects.push(bestCandidate.rect);
+        } else {
+          const fallback = { dx: 18, dy: -22, rect: { x: current.point.x + 18 - current.width/2, y: current.point.y - 22 - 12, w: current.width, h: 26 } };
+          current.selectedOffset = fallback;
+          placedRects.push(fallback.rect);
+        }
+      }
+      
+      for (let item of itemsWithPos) {
+        if (item.selectedOffset) {
+          const newLatLng = map.containerPointToLatLng({ x: item.point.x + item.selectedOffset.dx, y: item.point.y + item.selectedOffset.dy });
+          item.item.marker.setLatLng(newLatLng);
+        }
+      }
+    }
+    
+    function scheduleLabelUpdate() {
+      if (updateTimeout) clearTimeout(updateTimeout);
+      updateTimeout = setTimeout(() => { if (map) updateLabelPositions(); }, 50);
+    }
+    
+    function createLabelMarker(location, latLng) {
+      let shortName = location.name.replace("Total Vision ", "");
+      if (shortName.length > 22) shortName = shortName.substring(0, 20) + "…";
+      const html = `<div class="smart-label"><strong>👁️</strong> ${shortName}</div>`;
+      const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [null, null], iconAnchor: [0, 0] });
+      const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
+      marker.on('click', () => {
+        map.flyTo([location.lat, location.lng], 13);
+        highlightSidebar(locations.indexOf(location));
+        findDotMarker(location)?.openPopup();
+      });
+      return marker;
+    }
+    
+    function findDotMarker(location) {
+      let found = null;
+      markersLayer.eachLayer(layer => { if (layer.locationRef === location) found = layer; });
+      return found;
+    }
+    
+    function createDotMarker(location) {
+      const dot = L.circleMarker([location.lat, location.lng], { radius: 5, fillColor: '#1c6fb0', color: '#fff', weight: 1.8, fillOpacity: 0.9 });
+      dot.bindPopup(`<b>${location.name}</b><br>${location.address}`);
+      dot.on('click', () => map.flyTo([location.lat, location.lng], 13));
+      dot.locationRef = location;
+      return dot;
+    }
+    
+    function refreshMap() {
+      markersLayer.clearLayers();
+      labelsLayer.clearLayers();
+      labelObjects = [];
+      const filtered = getFilteredLocations();
+      filtered.forEach(loc => {
+        const dot = createDotMarker(loc);
+        markersLayer.addLayer(dot);
+        const labelMarker = createLabelMarker(loc, L.latLng(loc.lat, loc.lng));
+        labelsLayer.addLayer(labelMarker);
+        labelObjects.push({ marker: labelMarker, location: loc, latLng: L.latLng(loc.lat, loc.lng) });
+      });
+      setTimeout(() => updateLabelPositions(), 100);
+      renderSidebar(filtered);
+      
+      const norcalCount = filtered.filter(l => l.region === 'norcal').length;
+      const socalCount = filtered.filter(l => l.region === 'socal').length;
+      const searchInfo = currentSearchTerm ? ` — Search: "${currentSearchTerm}"` : '';
+      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}`;
+    }
+    
+    function renderSidebar(filtered) {
+      const container = document.getElementById('locationList');
+      container.innerHTML = '';
+      document.getElementById('sidebarCount').innerText = `(${filtered.length})`;
+      
+      if (filtered.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.innerHTML = '🔍 No locations found<br>Try a different search term';
+        container.appendChild(noResults);
+        return;
+      }
+      
+      filtered.forEach((loc, idx) => {
+        const globalIdx = locations.indexOf(loc);
+        const div = document.createElement('div');
+        div.className = 'location-item';
+        div.setAttribute('data-idx', globalIdx);
+        div.innerHTML = `<div class="location-name"><span>${loc.name}</span><span class="region-badge-sm">${loc.region === 'norcal' ? 'NorCal' : 'SoCal'}</span></div><div class="location-address">${loc.address.split(',')[0]}</div>`;
+        div.onclick = () => { map.flyTo([loc.lat, loc.lng], 13); highlightSidebar(globalIdx); findDotMarker(loc)?.openPopup(); };
+        container.appendChild(div);
+      });
+    }
+    
+    function highlightSidebar(globalIdx) {
+      document.querySelectorAll('.location-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll(`.location-item[data-idx="${globalIdx}"]`).forEach(el => el.classList.add('active'));
+    }
+    
+    function setFilter(region) {
+      currentFilter = region;
+      refreshMap();
+      const view = region === 'norcal' ? [37.6, -121.8] : (region === 'socal' ? [33.8, -117.8] : [36.5, -119.2]);
+      map.flyTo(view, region === 'all' ? 6.4 : 7.5);
+    }
+    
+    function handleSearch() {
+      const searchInput = document.getElementById('searchInput');
+      currentSearchTerm = searchInput.value;
+      refreshMap();
+      
+      // If search yields results and we're in "all" filter, adjust view to show all results
+      const filtered = getFilteredLocations();
+      if (filtered.length > 0 && currentFilter === 'all') {
+        // Optional: fit bounds to show all search results
+        const bounds = L.latLngBounds(filtered.map(loc => [loc.lat, loc.lng]));
+        if (filtered.length > 1) {
+          map.fitBounds(bounds, { padding: [50, 50] });
+        } else if (filtered.length === 1) {
+          map.flyTo([filtered[0].lat, filtered[0].lng], 12);
+        }
+      }
+    }
+    
+    function initTheme() {
+      const saved = localStorage.getItem('tvTheme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('themeToggleBtn').innerHTML = '☀️ Light Mode';
+      }
+    }
+    
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('tvTheme', isDark ? 'dark' : 'light');
+      const btn = document.getElementById('themeToggleBtn');
+      btn.innerHTML = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+    
+    function toggleMapFullscreen() {
+      const mapWrapper = document.getElementById('mapWrapper');
+      if (!isMapFullscreen) {
+        mapWrapper.classList.add('fullscreen');
+        isMapFullscreen = true;
+        document.getElementById('mapFullscreenBtn').innerHTML = '✕ Exit Fullscreen';
+      } else {
+        mapWrapper.classList.remove('fullscreen');
+        isMapFullscreen = false;
+        document.getElementById('mapFullscreenBtn').innerHTML = '⛶ Fullscreen Map';
+      }
+      setTimeout(() => map.invalidateSize(), 100);
+    }
+    
+    function init() {
+      map = L.map('map').setView([36.5, -119.2], 6.4);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
+      markersLayer.addTo(map);
+      labelsLayer.addTo(map);
+      refreshMap();
+      map.on('zoomend', scheduleLabelUpdate);
+      map.on('moveend', scheduleLabelUpdate);
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          setFilter(btn.dataset.region);
+        });
+      });
+      
+      document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+      document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
+      
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', handleSearch);
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSearch();
+      });
+      
+      initTheme();
+    }
+    
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
