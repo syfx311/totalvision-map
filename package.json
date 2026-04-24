@@ -1,0 +1,12 @@
+{
+  "name": "totalvision-map",
+  "version": "1.0.0",
+  "description": "Total Vision California locations map",
+  "private": true,
+  "scripts": {
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.0"
+  }
+}
