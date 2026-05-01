@@ -97,7 +97,7 @@
       align-items: center;
     }
 
-    .filter-btn, .action-btn {
+    .filter-btn, .action-btn, .brand-filter {
       background: var(--btn-bg);
       border: 1px solid var(--btn-border);
       padding: 7px 18px;
@@ -112,10 +112,22 @@
       gap: 6px;
     }
 
-    .filter-btn.active {
+    .filter-btn.active, .brand-filter.active {
       background: var(--btn-active);
       color: white;
       border-color: var(--btn-active);
+    }
+
+    .brand-filter.active[data-brand="Golden Vision"] {
+      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      color: #1a2c3e;
+      border-color: #d4a500;
+    }
+
+    body.dark .brand-filter.active[data-brand="Golden Vision"] {
+      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      color: #1a2c3e;
+      border-color: #d4a500;
     }
 
     .search-container {
@@ -172,6 +184,52 @@
       background: #1a2634;
       border: 1px solid var(--card-border);
       position: relative;
+    }
+
+    .legend {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+
+    .legend h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+      font-weight: 500;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid white;
+      flex-shrink: 0;
+    }
+
+    .legend-dot.total-vision {
+      background-color: #1c6fb0;
+    }
+
+    .legend-dot.golden-vision {
+      background: linear-gradient(135deg, #d4a500, #f4d03f);
     }
 
     .map-fullscreen-btn {
@@ -366,29 +424,46 @@
   </style>
 </head>
 <body>
-  <h1>📍 Total Vision · California</h1>
-  <div class="subhead">🏥 47 Official Locations — NorCal (11) + SoCal (36)</div>
-  
+  <h1>📍 Total Vision & Golden Vision · California</h1>
+  <div class="subhead">🏥 56 Official Locations — Total Vision (47) + Golden Vision (9)</div>
+
   <div class="controls">
-    <button class="filter-btn active" data-region="all">✨ All (47)</button>
-    <button class="filter-btn" data-region="norcal">🌲 NorCal (11)</button>
-    <button class="filter-btn" data-region="socal">☀️ SoCal (36)</button>
+    <button class="filter-btn active" data-region="all">✨ All (56)</button>
+    <button class="filter-btn" data-region="norcal">🌲 NorCal (15)</button>
+    <button class="filter-btn" data-region="socal">☀️ SoCal (41)</button>
     <button id="themeToggleBtn" class="action-btn">🌙 Dark Mode</button>
   </div>
-  
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city or location name...">
+
+  <div class="controls" id="brandControls">
+    <button class="brand-filter active" data-brand="all">All Brands (56)</button>
+    <button class="brand-filter" data-brand="Total Vision">Total Vision (47)</button>
+    <button class="brand-filter" data-brand="Golden Vision">Golden Vision (9)</button>
   </div>
-  
-  <div class="stats" id="statsDisplay">📍 47 Total Vision locations — Search enabled</div>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, brand or location name...">
+  </div>
+
+  <div class="stats" id="statsDisplay">📍 56 locations — Search enabled</div>
 
   <div class="container">
     <div class="map-wrapper" id="mapWrapper">
       <div id="map"></div>
+      <div class="legend">
+        <h4>Legend</h4>
+        <div class="legend-item">
+          <div class="legend-dot total-vision"></div>
+          <span>Total Vision</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot golden-vision"></div>
+          <span>Golden Vision</span>
+        </div>
+      </div>
       <button id="mapFullscreenBtn" class="map-fullscreen-btn">⛶ Fullscreen Map</button>
     </div>
     <div class="sidebar">
-      <h3>📋 Total Vision Clinics <span id="sidebarCount"></span></h3>
+      <h3>📋 Locations <span id="sidebarCount"></span></h3>
       <div class="location-list" id="locationList"></div>
     </div>
   </div>
@@ -396,64 +471,79 @@
 
   <script>
     // ============================================================
-    // FINAL LOCATIONS - San Francisco (20th Ave) REMOVED
-    // NorCal: 11 locations | SoCal: 36 locations | Total: 47
+    // TOTAL VISION: 47 locations (NorCal: 11, SoCal: 36)
+    // GOLDEN VISION: 9 locations (NorCal: 4, SoCal: 5)
+    // Total: 56 locations
     // ============================================================
     const locations = [
-      // ==================== NORTHERN CALIFORNIA (11) - San Francisco (20th Ave) REMOVED ====================
-      { name: "Total Vision Novato", address: "1730 Novato Blvd Ste C, Novato, CA 94947", lat: 38.1074, lng: -122.5697, region: "norcal", city: "Novato" },
-      { name: "Total Vision Richmond", address: "5515 Geary Blvd, San Francisco, CA 94121", lat: 37.7801, lng: -122.4811, region: "norcal", city: "San Francisco" },
-      { name: "Total Vision Financial District", address: "530 Bush St #101, San Francisco, CA 94108", lat: 37.7908, lng: -122.4065, region: "norcal", city: "San Francisco" },
-      { name: "Total Vision Hercules", address: "1375 Sycamore Ave #150E, Hercules, CA 94547", lat: 38.0167, lng: -122.2886, region: "norcal", city: "Hercules" },
-      { name: "Total Vision Pleasanton", address: "6155 Stoneridge Dr #100, Pleasanton, CA 94588", lat: 37.6944, lng: -121.9012, region: "norcal", city: "Pleasanton" },
-      { name: "Total Vision Santa Clara", address: "2366 El Camino Real #5, Santa Clara, CA 95050", lat: 37.3515, lng: -121.9629, region: "norcal", city: "Santa Clara" },
-      { name: "Total Vision Campbell", address: "338 E Hamilton Ave, Campbell, CA 95008", lat: 37.2931, lng: -121.9441, region: "norcal", city: "Campbell" },
-      { name: "Total Vision Willow Glen", address: "3021 Meridian Ave, San Jose, CA 95124", lat: 37.2782, lng: -121.9058, region: "norcal", city: "San Jose" },
-      { name: "Total Vision Los Gatos", address: "233 N Santa Cruz Ave, Los Gatos, CA 95030", lat: 37.2234, lng: -121.9822, region: "norcal", city: "Los Gatos" },
-      { name: "Total Vision Golden Hills", address: "2690 S White Rd #255, San Jose, CA 95148", lat: 37.2845, lng: -121.8003, region: "norcal", city: "San Jose" },
-      { name: "Total Vision Santa Cruz", address: "904 Cedar St, Santa Cruz, CA 95060", lat: 36.9749, lng: -122.0288, region: "norcal", city: "Santa Cruz" },
+      // ==================== NORTHERN CALIFORNIA - TOTAL VISION (11) ====================
+      { brand: "Total Vision", name: "Total Vision Novato", address: "1730 Novato Blvd Ste C, Novato, CA 94947", lat: 38.1074, lng: -122.5697, region: "norcal", city: "Novato" },
+      { brand: "Total Vision", name: "Total Vision Richmond", address: "5515 Geary Blvd, San Francisco, CA 94121", lat: 37.7801, lng: -122.4811, region: "norcal", city: "San Francisco" },
+      { brand: "Total Vision", name: "Total Vision Financial District", address: "530 Bush St #101, San Francisco, CA 94108", lat: 37.7908, lng: -122.4065, region: "norcal", city: "San Francisco" },
+      { brand: "Total Vision", name: "Total Vision Hercules", address: "1375 Sycamore Ave #150E, Hercules, CA 94547", lat: 38.0167, lng: -122.2886, region: "norcal", city: "Hercules" },
+      { brand: "Total Vision", name: "Total Vision Pleasanton", address: "6155 Stoneridge Dr #100, Pleasanton, CA 94588", lat: 37.6944, lng: -121.9012, region: "norcal", city: "Pleasanton" },
+      { brand: "Total Vision", name: "Total Vision Santa Clara", address: "2366 El Camino Real #5, Santa Clara, CA 95050", lat: 37.3515, lng: -121.9629, region: "norcal", city: "Santa Clara" },
+      { brand: "Total Vision", name: "Total Vision Campbell", address: "338 E Hamilton Ave, Campbell, CA 95008", lat: 37.2931, lng: -121.9441, region: "norcal", city: "Campbell" },
+      { brand: "Total Vision", name: "Total Vision Willow Glen", address: "3021 Meridian Ave, San Jose, CA 95124", lat: 37.2782, lng: -121.9058, region: "norcal", city: "San Jose" },
+      { brand: "Total Vision", name: "Total Vision Los Gatos", address: "233 N Santa Cruz Ave, Los Gatos, CA 95030", lat: 37.2234, lng: -121.9822, region: "norcal", city: "Los Gatos" },
+      { brand: "Total Vision", name: "Total Vision Golden Hills", address: "2690 S White Rd #255, San Jose, CA 95148", lat: 37.2845, lng: -121.8003, region: "norcal", city: "San Jose" },
+      { brand: "Total Vision", name: "Total Vision Santa Cruz", address: "904 Cedar St, Santa Cruz, CA 95060", lat: 36.9749, lng: -122.0288, region: "norcal", city: "Santa Cruz" },
+
+      // ==================== NORTHERN CALIFORNIA - GOLDEN VISION (4) ====================
+      { brand: "Golden Vision", name: "Golden Vision Cupertino", address: "10300 De Anza Blvd, Cupertino, CA 95014", lat: 37.3230, lng: -122.0322, region: "norcal", city: "Cupertino" },
+      { brand: "Golden Vision", name: "Golden Vision Dublin", address: "7700 Dublin Blvd, Dublin, CA 94568", lat: 37.7022, lng: -121.9358, region: "norcal", city: "Dublin" },
+      { brand: "Golden Vision", name: "Golden Vision Milpitas", address: "1200 East Calaveras Blvd, Milpitas, CA 95035", lat: 37.4323, lng: -121.8996, region: "norcal", city: "Milpitas" },
+      { brand: "Golden Vision", name: "Golden Vision San Francisco", address: "1585 Valencia St, San Francisco, CA 94110", lat: 37.7749, lng: -122.4194, region: "norcal", city: "San Francisco" },
       
-      // ==================== SOUTHERN CALIFORNIA (36) ====================
-      { name: "Total Vision Camarillo", address: "2380 Las Posas Rd #C, Camarillo, CA 93010", lat: 34.2255, lng: -119.0479, region: "socal", city: "Camarillo" },
-      { name: "Total Vision West Hollywood", address: "8205 Santa Monica Blvd #15, West Hollywood, CA 90046", lat: 34.0905, lng: -118.3655, region: "socal", city: "West Hollywood" },
-      { name: "Total Vision Pasadena", address: "1 W California Blvd #513, Pasadena, CA 91105", lat: 34.1461, lng: -118.1517, region: "socal", city: "Pasadena" },
-      { name: "Total Vision Diamond Bar", address: "718 N Diamond Bar Blvd, Diamond Bar, CA 91765", lat: 34.0281, lng: -117.8151, region: "socal", city: "Diamond Bar" },
-      { name: "Total Vision Riverside", address: "4515 Central Ave #101, Riverside, CA 92506", lat: 33.9489, lng: -117.3892, region: "socal", city: "Riverside" },
-      { name: "Total Vision Chino Hills", address: "2581 Chino Hills Pkwy, Chino Hills, CA 91709", lat: 33.9774, lng: -117.7473, region: "socal", city: "Chino Hills" },
-      { name: "Total Vision Little Tokyo", address: "334-B E 2nd St, Los Angeles, CA 90012", lat: 34.0491, lng: -118.2419, region: "socal", city: "Los Angeles" },
-      { name: "Total Vision Culver City", address: "12461 W Washington Blvd, Los Angeles, CA 90066", lat: 33.9981, lng: -118.4138, region: "socal", city: "Los Angeles" },
-      { name: "Total Vision Long Beach", address: "2280 E Carson St, Long Beach, CA 90807", lat: 33.8301, lng: -118.1927, region: "socal", city: "Long Beach" },
-      { name: "Total Vision Seal Beach", address: "1190 Pacific Coast Hwy #E, Seal Beach, CA 90740", lat: 33.7416, lng: -118.1026, region: "socal", city: "Seal Beach" },
-      { name: "Total Vision Huntington Beach", address: "5092 Warner Ave, Huntington Beach, CA 92649", lat: 33.7151, lng: -118.0453, region: "socal", city: "Huntington Beach" },
-      { name: "Total Vision Fountain Valley", address: "9107 Garfield Ave, Fountain Valley, CA 92708", lat: 33.7083, lng: -117.9447, region: "socal", city: "Fountain Valley" },
-      { name: "Total Vision Laguna Crown Valley", address: "30030 Town Center Dr, Laguna Niguel, CA 92677", lat: 33.5534, lng: -117.7141, region: "socal", city: "Laguna Niguel" },
-      { name: "Total Vision San Clemente", address: "140 Avenida Del Mar, San Clemente, CA 92672", lat: 33.4258, lng: -117.6148, region: "socal", city: "San Clemente" },
-      { name: "Total Vision RSM", address: "30212 Tomas #170, Rancho Santa Margarita, CA 92688", lat: 33.6378, lng: -117.6052, region: "socal", city: "Rancho Santa Margarita" },
-      { name: "Total Vision Ladera Ranch", address: "333 Corporate Dr #120, Ladera Ranch, CA 92694", lat: 33.5718, lng: -117.6398, region: "socal", city: "Ladera Ranch" },
-      { name: "Total Vision Laguna La Paz", address: "27451B La Paz Rd, Laguna Niguel, CA 92677", lat: 33.5673, lng: -117.7049, region: "socal", city: "Laguna Niguel" },
-      { name: "Total Vision Talega", address: "1001 Avenida Pico #A, San Clemente, CA 92673", lat: 33.4589, lng: -117.6209, region: "socal", city: "San Clemente" },
-      { name: "Total Vision Lake Elsinore", address: "32245 Mission Trail #D4, Lake Elsinore, CA 92530", lat: 33.6731, lng: -117.3165, region: "socal", city: "Lake Elsinore" },
-      { name: "Total Vision La Quinta", address: "78015 Main St #107, La Quinta, CA 92253", lat: 33.6729, lng: -116.3047, region: "socal", city: "La Quinta" },
-      { name: "Total Vision Carlsbad Plaza", address: "2540 El Camino Real #B, Carlsbad, CA 92008", lat: 33.1258, lng: -117.2686, region: "socal", city: "Carlsbad" },
-      { name: "Total Vision Carlsbad", address: "3144 El Camino Real #202, Carlsbad, CA 92008", lat: 33.1271, lng: -117.2691, region: "socal", city: "Carlsbad" },
-      { name: "Total Vision Encinitas", address: "1454 Encinitas Blvd, Encinitas, CA 92024", lat: 33.0461, lng: -117.2588, region: "socal", city: "Encinitas" },
-      { name: "Total Vision Solana Beach", address: "665 San Rodolfo Dr #119, Solana Beach, CA 92075", lat: 32.9868, lng: -117.2575, region: "socal", city: "Solana Beach" },
-      { name: "Total Vision Del Mar", address: "12880 Carmel Country Rd #D110, San Diego, CA 92130", lat: 32.9459, lng: -117.2218, region: "socal", city: "San Diego" },
-      { name: "Total Vision UTC – Regents", address: "7770 Regents Rd #104, San Diego, CA 92122", lat: 32.8643, lng: -117.2274, region: "socal", city: "San Diego" },
-      { name: "Total Vision Mira Mesa", address: "8230 Mira Mesa Blvd #B, San Diego, CA 92126", lat: 32.9155, lng: -117.1464, region: "socal", city: "San Diego" },
-      { name: "Total Vision Tierrasanta", address: "5990 Santo Rd, San Diego, CA 92124", lat: 32.8231, lng: -117.1026, region: "socal", city: "San Diego" },
-      { name: "Total Vision Rancho Bernardo", address: "11717 Bernardo Plaza Ct #105, San Diego, CA 92128", lat: 33.0359, lng: -117.0845, region: "socal", city: "San Diego" },
-      { name: "Total Vision El Cajon", address: "1093 E Main St, El Cajon, CA 92021", lat: 32.7965, lng: -116.9338, region: "socal", city: "El Cajon" },
-      { name: "Total Vision La Mesa", address: "7090 Parkway Dr #A, La Mesa, CA 91942", lat: 32.7693, lng: -117.0202, region: "socal", city: "La Mesa" },
-      { name: "Total Vision Lemon Grove", address: "7850 Broadway, Lemon Grove, CA 91945", lat: 32.7419, lng: -117.0321, region: "socal", city: "Lemon Grove" },
-      { name: "Total Vision Eastlake", address: "890 Eastlake Pkwy #102, Chula Vista, CA 91914", lat: 32.6405, lng: -117.0053, region: "socal", city: "Chula Vista" },
-      { name: "Total Vision Bonita", address: "180 Otay Lakes Rd #201, Bonita, CA 91902", lat: 32.6503, lng: -117.0076, region: "socal", city: "Bonita" },
-      { name: "Total Vision Terra Nova", address: "374 E H St #1708, Chula Vista, CA 91910", lat: 32.6344, lng: -117.0867, region: "socal", city: "Chula Vista" },
-      { name: "Total Vision Sports Arena", address: "3750 Sports Arena Blvd #9, San Diego, CA 92110", lat: 32.7524, lng: -117.2091, region: "socal", city: "San Diego" }
+      // ==================== SOUTHERN CALIFORNIA - TOTAL VISION (36) ====================
+      { brand: "Total Vision", name: "Total Vision Camarillo", address: "2380 Las Posas Rd #C, Camarillo, CA 93010", lat: 34.2255, lng: -119.0479, region: "socal", city: "Camarillo" },
+      { brand: "Total Vision", name: "Total Vision West Hollywood", address: "8205 Santa Monica Blvd #15, West Hollywood, CA 90046", lat: 34.0905, lng: -118.3655, region: "socal", city: "West Hollywood" },
+      { brand: "Total Vision", name: "Total Vision Pasadena", address: "1 W California Blvd #513, Pasadena, CA 91105", lat: 34.1461, lng: -118.1517, region: "socal", city: "Pasadena" },
+      { brand: "Total Vision", name: "Total Vision Diamond Bar", address: "718 N Diamond Bar Blvd, Diamond Bar, CA 91765", lat: 34.0281, lng: -117.8151, region: "socal", city: "Diamond Bar" },
+      { brand: "Total Vision", name: "Total Vision Riverside", address: "4515 Central Ave #101, Riverside, CA 92506", lat: 33.9489, lng: -117.3892, region: "socal", city: "Riverside" },
+      { brand: "Total Vision", name: "Total Vision Chino Hills", address: "2581 Chino Hills Pkwy, Chino Hills, CA 91709", lat: 33.9774, lng: -117.7473, region: "socal", city: "Chino Hills" },
+      { brand: "Total Vision", name: "Total Vision Little Tokyo", address: "334-B E 2nd St, Los Angeles, CA 90012", lat: 34.0491, lng: -118.2419, region: "socal", city: "Los Angeles" },
+      { brand: "Total Vision", name: "Total Vision Culver City", address: "12461 W Washington Blvd, Los Angeles, CA 90066", lat: 33.9981, lng: -118.4138, region: "socal", city: "Los Angeles" },
+      { brand: "Total Vision", name: "Total Vision Long Beach", address: "2280 E Carson St, Long Beach, CA 90807", lat: 33.8301, lng: -118.1927, region: "socal", city: "Long Beach" },
+      { brand: "Total Vision", name: "Total Vision Seal Beach", address: "1190 Pacific Coast Hwy #E, Seal Beach, CA 90740", lat: 33.7416, lng: -118.1026, region: "socal", city: "Seal Beach" },
+      { brand: "Total Vision", name: "Total Vision Huntington Beach", address: "5092 Warner Ave, Huntington Beach, CA 92649", lat: 33.7151, lng: -118.0453, region: "socal", city: "Huntington Beach" },
+      { brand: "Total Vision", name: "Total Vision Fountain Valley", address: "9107 Garfield Ave, Fountain Valley, CA 92708", lat: 33.7083, lng: -117.9447, region: "socal", city: "Fountain Valley" },
+      { brand: "Total Vision", name: "Total Vision Laguna Crown Valley", address: "30030 Town Center Dr, Laguna Niguel, CA 92677", lat: 33.5534, lng: -117.7141, region: "socal", city: "Laguna Niguel" },
+      { brand: "Total Vision", name: "Total Vision San Clemente", address: "140 Avenida Del Mar, San Clemente, CA 92672", lat: 33.4258, lng: -117.6148, region: "socal", city: "San Clemente" },
+      { brand: "Total Vision", name: "Total Vision RSM", address: "30212 Tomas #170, Rancho Santa Margarita, CA 92688", lat: 33.6378, lng: -117.6052, region: "socal", city: "Rancho Santa Margarita" },
+      { brand: "Total Vision", name: "Total Vision Ladera Ranch", address: "333 Corporate Dr #120, Ladera Ranch, CA 92694", lat: 33.5718, lng: -117.6398, region: "socal", city: "Ladera Ranch" },
+      { brand: "Total Vision", name: "Total Vision Laguna La Paz", address: "27451B La Paz Rd, Laguna Niguel, CA 92677", lat: 33.5673, lng: -117.7049, region: "socal", city: "Laguna Niguel" },
+      { brand: "Total Vision", name: "Total Vision Talega", address: "1001 Avenida Pico #A, San Clemente, CA 92673", lat: 33.4589, lng: -117.6209, region: "socal", city: "San Clemente" },
+      { brand: "Total Vision", name: "Total Vision Lake Elsinore", address: "32245 Mission Trail #D4, Lake Elsinore, CA 92530", lat: 33.6731, lng: -117.3165, region: "socal", city: "Lake Elsinore" },
+      { brand: "Total Vision", name: "Total Vision La Quinta", address: "78015 Main St #107, La Quinta, CA 92253", lat: 33.6729, lng: -116.3047, region: "socal", city: "La Quinta" },
+      { brand: "Total Vision", name: "Total Vision Carlsbad Plaza", address: "2540 El Camino Real #B, Carlsbad, CA 92008", lat: 33.1258, lng: -117.2686, region: "socal", city: "Carlsbad" },
+      { brand: "Total Vision", name: "Total Vision Carlsbad", address: "3144 El Camino Real #202, Carlsbad, CA 92008", lat: 33.1271, lng: -117.2691, region: "socal", city: "Carlsbad" },
+      { brand: "Total Vision", name: "Total Vision Encinitas", address: "1454 Encinitas Blvd, Encinitas, CA 92024", lat: 33.0461, lng: -117.2588, region: "socal", city: "Encinitas" },
+      { brand: "Total Vision", name: "Total Vision Solana Beach", address: "665 San Rodolfo Dr #119, Solana Beach, CA 92075", lat: 32.9868, lng: -117.2575, region: "socal", city: "Solana Beach" },
+      { brand: "Total Vision", name: "Total Vision Del Mar", address: "12880 Carmel Country Rd #D110, San Diego, CA 92130", lat: 32.9459, lng: -117.2218, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision UTC – Regents", address: "7770 Regents Rd #104, San Diego, CA 92122", lat: 32.8643, lng: -117.2274, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Mira Mesa", address: "8230 Mira Mesa Blvd #B, San Diego, CA 92126", lat: 32.9155, lng: -117.1464, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Tierrasanta", address: "5990 Santo Rd, San Diego, CA 92124", lat: 32.8231, lng: -117.1026, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Rancho Bernardo", address: "11717 Bernardo Plaza Ct #105, San Diego, CA 92128", lat: 33.0359, lng: -117.0845, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision El Cajon", address: "1093 E Main St, El Cajon, CA 92021", lat: 32.7965, lng: -116.9338, region: "socal", city: "El Cajon" },
+      { brand: "Total Vision", name: "Total Vision La Mesa", address: "7090 Parkway Dr #A, La Mesa, CA 91942", lat: 32.7693, lng: -117.0202, region: "socal", city: "La Mesa" },
+      { brand: "Total Vision", name: "Total Vision Lemon Grove", address: "7850 Broadway, Lemon Grove, CA 91945", lat: 32.7419, lng: -117.0321, region: "socal", city: "Lemon Grove" },
+      { brand: "Total Vision", name: "Total Vision Eastlake", address: "890 Eastlake Pkwy #102, Chula Vista, CA 91914", lat: 32.6405, lng: -117.0053, region: "socal", city: "Chula Vista" },
+      { brand: "Total Vision", name: "Total Vision Bonita", address: "180 Otay Lakes Rd #201, Bonita, CA 91902", lat: 32.6503, lng: -117.0076, region: "socal", city: "Bonita" },
+      { brand: "Total Vision", name: "Total Vision Terra Nova", address: "374 E H St #1708, Chula Vista, CA 91910", lat: 32.6344, lng: -117.0867, region: "socal", city: "Chula Vista" },
+      { brand: "Total Vision", name: "Total Vision Sports Arena", address: "3750 Sports Arena Blvd #9, San Diego, CA 92110", lat: 32.7524, lng: -117.2091, region: "socal", city: "San Diego" },
+
+      // ==================== SOUTHERN CALIFORNIA - GOLDEN VISION (5) ====================
+      { brand: "Golden Vision", name: "Golden Vision Irvine", address: "1 Spectrum Pointe Dr, Irvine, CA 92618", lat: 33.6846, lng: -117.8265, region: "socal", city: "Irvine" },
+      { brand: "Golden Vision", name: "Golden Vision Rowland Heights", address: "18600 Gale Ave, Rowland Heights, CA 91748", lat: 33.9761, lng: -117.9053, region: "socal", city: "Rowland Heights" },
+      { brand: "Golden Vision", name: "Golden Vision Arcadia", address: "400 W Huntington Dr, Arcadia, CA 91007", lat: 34.1397, lng: -118.0353, region: "socal", city: "Arcadia" },
+      { brand: "Golden Vision", name: "Golden Vision San Gabriel", address: "340 W Valley Blvd, San Gabriel, CA 91776", lat: 34.0961, lng: -118.1058, region: "socal", city: "San Gabriel" },
+      { brand: "Golden Vision", name: "Golden Vision San Diego", address: "1200 Third Ave, San Diego, CA 92101", lat: 32.7157, lng: -117.1611, region: "socal", city: "San Diego" }
     ];
 
     let map;
     let currentFilter = 'all';
+    let currentBrandFilter = 'all';
     let currentSearchTerm = '';
     let markersLayer = L.layerGroup();
     let labelsLayer = L.layerGroup();
@@ -463,17 +553,23 @@
 
     function getFilteredLocations() {
       let filtered = locations.filter(loc => currentFilter === 'all' || loc.region === currentFilter);
-      
+
+      // Apply brand filter
+      if (currentBrandFilter !== 'all') {
+        filtered = filtered.filter(loc => loc.brand === currentBrandFilter);
+      }
+
       // Apply search filter
       if (currentSearchTerm.trim() !== '') {
         const term = currentSearchTerm.toLowerCase().trim();
-        filtered = filtered.filter(loc => 
-          loc.name.toLowerCase().includes(term) || 
+        filtered = filtered.filter(loc =>
+          loc.name.toLowerCase().includes(term) ||
           loc.city.toLowerCase().includes(term) ||
+          loc.brand.toLowerCase().includes(term) ||
           loc.address.toLowerCase().includes(term)
         );
       }
-      
+
       return filtered;
     }
 
@@ -573,8 +669,17 @@
     }
     
     function createDotMarker(location) {
-      const dot = L.circleMarker([location.lat, location.lng], { radius: 5, fillColor: '#1c6fb0', color: '#fff', weight: 1.8, fillOpacity: 0.9 });
-      dot.bindPopup(`<b>${location.name}</b><br>${location.address}`);
+      const isGoldenVision = location.brand === 'Golden Vision';
+      const fillColor = isGoldenVision ? '#d4a500' : '#1c6fb0';
+      const dot = L.circleMarker([location.lat, location.lng], {
+        radius: 5,
+        fillColor: fillColor,
+        color: '#fff',
+        weight: 1.8,
+        fillOpacity: 0.9
+      });
+      const popupHTML = `<b>${location.name}</b><br><strong>Brand:</strong> ${location.brand}<br><strong>Region:</strong> ${location.region === 'norcal' ? 'NorCal' : 'SoCal'}<br><small>${location.address}</small>`;
+      dot.bindPopup(popupHTML);
       dot.on('click', () => map.flyTo([location.lat, location.lng], 13));
       dot.locationRef = location;
       return dot;
@@ -594,32 +699,36 @@
       });
       setTimeout(() => updateLabelPositions(), 100);
       renderSidebar(filtered);
-      
+
       const norcalCount = filtered.filter(l => l.region === 'norcal').length;
       const socalCount = filtered.filter(l => l.region === 'socal').length;
+      const tvCount = filtered.filter(l => l.brand === 'Total Vision').length;
+      const gvCount = filtered.filter(l => l.brand === 'Golden Vision').length;
       const searchInfo = currentSearchTerm ? ` — Search: "${currentSearchTerm}"` : '';
-      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}`;
+      const brandInfo = currentBrandFilter !== 'all' ? ` — ${currentBrandFilter}` : '';
+      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations${brandInfo} (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}`;
     }
     
     function renderSidebar(filtered) {
       const container = document.getElementById('locationList');
       container.innerHTML = '';
       document.getElementById('sidebarCount').innerText = `(${filtered.length})`;
-      
+
       if (filtered.length === 0) {
         const noResults = document.createElement('div');
         noResults.className = 'no-results';
-        noResults.innerHTML = '🔍 No locations found<br>Try a different search term';
+        noResults.innerHTML = '🔍 No locations found<br>Try a different search or filter';
         container.appendChild(noResults);
         return;
       }
-      
+
       filtered.forEach((loc, idx) => {
         const globalIdx = locations.indexOf(loc);
         const div = document.createElement('div');
         div.className = 'location-item';
         div.setAttribute('data-idx', globalIdx);
-        div.innerHTML = `<div class="location-name"><span>${loc.name}</span><span class="region-badge-sm">${loc.region === 'norcal' ? 'NorCal' : 'SoCal'}</span></div><div class="location-address">${loc.address.split(',')[0]}</div>`;
+        const brandEmoji = loc.brand === 'Golden Vision' ? '✨' : '👁️';
+        div.innerHTML = `<div class="location-name"><span>${brandEmoji} ${loc.name}</span><span class="region-badge-sm">${loc.region === 'norcal' ? 'NorCal' : 'SoCal'}</span></div><div class="location-address">${loc.address.split(',')[0]}</div>`;
         div.onclick = () => { map.flyTo([loc.lat, loc.lng], 13); highlightSidebar(globalIdx); findDotMarker(loc)?.openPopup(); };
         container.appendChild(div);
       });
@@ -686,6 +795,11 @@
       setTimeout(() => map.invalidateSize(), 100);
     }
     
+    function setBrandFilter(brand) {
+      currentBrandFilter = brand;
+      refreshMap();
+    }
+
     function init() {
       map = L.map('map').setView([36.5, -119.2], 6.4);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
@@ -694,7 +808,7 @@
       refreshMap();
       map.on('zoomend', scheduleLabelUpdate);
       map.on('moveend', scheduleLabelUpdate);
-      
+
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -702,16 +816,24 @@
           setFilter(btn.dataset.region);
         });
       });
-      
+
+      document.querySelectorAll('.brand-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.brand-filter').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          setBrandFilter(btn.dataset.brand);
+        });
+      });
+
       document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
       document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
-      
+
       const searchInput = document.getElementById('searchInput');
       searchInput.addEventListener('input', handleSearch);
       searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSearch();
       });
-      
+
       initTheme();
     }
     
