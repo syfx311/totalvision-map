@@ -478,29 +478,31 @@
     }
 
     .smart-label {
-      background: var(--label-bg);
+      background: #0054A4;
       backdrop-filter: blur(8px);
       color: white;
       font-size: 10px;
       font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 20px;
-      border: 1px solid var(--label-border);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #0054A4;
       white-space: nowrap;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0, 84, 164, 0.3);
       pointer-events: auto;
       cursor: pointer;
-      transition: transform 0.1s ease;
+      transition: all 0.2s ease;
       z-index: 1000;
     }
-    
+
     .smart-label:hover {
-      transform: scale(1.02);
+      background: #003d7a;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 84, 164, 0.4);
     }
-    
+
     .smart-label strong {
       font-weight: 800;
-      color: #ffdd99;
+      color: white;
       margin-right: 3px;
     }
     
