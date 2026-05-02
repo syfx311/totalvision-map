@@ -80,10 +80,10 @@
     h1 {
       text-align: center;
       font-size: 2rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 6px;
       letter-spacing: 1.82px;
-      color: var(--text-primary);
+      color: #0054A4;
       text-transform: uppercase;
     }
 
@@ -311,12 +311,16 @@
       margin-bottom: 14px;
       padding-left: 10px;
       border-left: 4px solid var(--primary-blue);
-      color: var(--dark-navy);
+      color: #0054A4;
       display: flex;
       justify-content: space-between;
       align-items: center;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+
+    body.dark .sidebar h3 {
+      color: #00AEEF;
     }
 
     .location-list {
@@ -334,6 +338,36 @@
       font-size: 0.8rem;
       font-weight: 500;
       border: 1px solid var(--item-border);
+      counter-increment: location-counter;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .location-item::before {
+      content: counter(location-counter);
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #0054A4;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    body.dark .location-item::before {
+      background: #00AEEF;
+      color: #0f172a;
+    }
+
+    .location-list {
+      counter-reset: location-counter;
     }
 
     .location-item:hover {
@@ -353,12 +387,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: var(--text-primary);
     }
 
     .location-address {
       font-size: 0.7rem;
       opacity: 0.8;
       margin-top: 4px;
+      color: var(--text-secondary);
     }
 
     .region-badge-sm {
@@ -461,13 +497,13 @@
   </div>
 
   <div class="controls" id="brandControls">
-    <button class="brand-filter active" data-brand="all">All Brands (56)</button>
+    <button class="brand-filter active" data-brand="all">All Locations (56)</button>
     <button class="brand-filter" data-brand="Total Vision">Total Vision (47)</button>
     <button class="brand-filter" data-brand="Golden Vision">Golden Vision (9)</button>
   </div>
 
   <div class="search-container">
-    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, brand or location name...">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, location or name...">
   </div>
 
   <div class="stats" id="statsDisplay">📍 56 locations — Search enabled</div>
