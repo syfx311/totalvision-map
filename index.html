@@ -330,29 +330,45 @@
     }
 
     .location-item {
-      background: var(--item-bg);
-      padding: 10px 12px;
+      padding: 14px 12px;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 0.8rem;
-      font-weight: 500;
-      border: 1px solid var(--item-border);
+      font-size: 0.75rem;
+      border: none;
       counter-increment: location-counter;
       position: relative;
-      padding-left: 28px;
+      padding-left: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .location-item:nth-child(even) {
+      background: var(--item-hover);
+    }
+
+    .location-item:nth-child(odd) {
+      background: #f0f7fc;
+    }
+
+    body.dark .location-item:nth-child(odd) {
+      background: #1a2f47;
+    }
+
+    body.dark .location-item:nth-child(even) {
+      background: #224060;
     }
 
     .location-item::before {
       content: counter(location-counter);
       position: absolute;
       left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 14px;
       background: #0054A4;
       color: white;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -386,15 +402,53 @@
       font-size: 0.85rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       color: var(--text-primary);
+      gap: 8px;
+    }
+
+    .location-name-text {
+      flex: 1;
+    }
+
+    .location-region-badge {
+      background: #0054A4;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    body.dark .location-region-badge {
+      background: #00AEEF;
+      color: #0f172a;
     }
 
     .location-address {
-      font-size: 0.7rem;
-      opacity: 0.8;
-      margin-top: 4px;
+      font-size: 0.72rem;
       color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    .location-phone {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .location-website {
+      font-size: 0.72rem;
+      color: #0054A4;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    body.dark .location-website {
+      color: #00AEEF;
     }
 
     .region-badge-sm {
@@ -539,68 +593,68 @@
     // ============================================================
     const locations = [
       // ==================== NORTHERN CALIFORNIA - TOTAL VISION (11) ====================
-      { brand: "Total Vision", name: "Total Vision Novato", address: "1730 Novato Boulevard, Suite C, Novato, CA 94947", lat: 38.1074, lng: -122.5697, region: "norcal", city: "Novato" },
-      { brand: "Total Vision", name: "Total Vision Richmond", address: "5515 Geary Boulevard, San Francisco, CA 94121", lat: 37.7801, lng: -122.4811, region: "norcal", city: "San Francisco" },
-      { brand: "Total Vision", name: "Total Vision Financial District", address: "530 Bush St #101, San Francisco, CA 94108", lat: 37.7908, lng: -122.4065, region: "norcal", city: "San Francisco" },
-      { brand: "Total Vision", name: "Total Vision Hercules", address: "1375 Sycamore Avenue #150E, Hercules, CA 94547", lat: 38.0167, lng: -122.2886, region: "norcal", city: "Hercules" },
-      { brand: "Total Vision", name: "Total Vision Pleasanton", address: "6155 Stoneridge Dr Suite 100, Pleasanton, CA 94588", lat: 37.6944, lng: -121.9012, region: "norcal", city: "Pleasanton" },
-      { brand: "Total Vision", name: "Total Vision Santa Clara", address: "2366 El Camino Real #5, Santa Clara, CA 95050", lat: 37.3515, lng: -121.9629, region: "norcal", city: "Santa Clara" },
-      { brand: "Total Vision", name: "Total Vision Campbell", address: "338 E Hamilton Ave, Campbell, CA 95008", lat: 37.2931, lng: -121.9441, region: "norcal", city: "Campbell" },
-      { brand: "Total Vision", name: "Total Vision Willow Glen", address: "3021 Meridian Ave, San Jose, CA 95124", lat: 37.2782, lng: -121.9058, region: "norcal", city: "San Jose" },
-      { brand: "Total Vision", name: "Total Vision Los Gatos", address: "233 N. Santa Cruz Avenue, Los Gatos, CA 95030", lat: 37.2234, lng: -121.9822, region: "norcal", city: "Los Gatos" },
-      { brand: "Total Vision", name: "Total Vision Golden Hills", address: "2690 S. White Rd., Suite 255, San Jose, CA 95148", lat: 37.2845, lng: -121.8003, region: "norcal", city: "San Jose" },
-      { brand: "Total Vision", name: "Total Vision Santa Cruz", address: "904 Cedar St, Santa Cruz, CA 95060", lat: 36.9749, lng: -122.0288, region: "norcal", city: "Santa Cruz" },
+      { brand: "Total Vision", name: "Total Vision Novato", address: "1730 Novato Boulevard, Suite C, Novato, CA 94947", phone: "(415) 892-0300", website: "totalvision2020.com/location/novato/", lat: 38.1074, lng: -122.5697, region: "norcal", city: "Novato" },
+      { brand: "Total Vision", name: "Total Vision Richmond", address: "5515 Geary Boulevard, San Francisco, CA 94121", phone: "(415) 346-1010", website: "totalvision2020.com/location/richmond/", lat: 37.7801, lng: -122.4811, region: "norcal", city: "San Francisco" },
+      { brand: "Total Vision", name: "Total Vision Financial District", address: "530 Bush St #101, San Francisco, CA 94108", phone: "(415) 392-4141", website: "totalvision2020.com/location/financial/", lat: 37.7908, lng: -122.4065, region: "norcal", city: "San Francisco" },
+      { brand: "Total Vision", name: "Total Vision Hercules", address: "1375 Sycamore Avenue #150E, Hercules, CA 94547", phone: "(510) 724-4122", website: "totalvision2020.com/location/hercules/", lat: 38.0167, lng: -122.2886, region: "norcal", city: "Hercules" },
+      { brand: "Total Vision", name: "Total Vision Pleasanton", address: "6155 Stoneridge Dr Suite 100, Pleasanton, CA 94588", phone: "(925) 463-9877", website: "totalvision2020.com/location/pleasanton/", lat: 37.6944, lng: -121.9012, region: "norcal", city: "Pleasanton" },
+      { brand: "Total Vision", name: "Total Vision Santa Clara", address: "2366 El Camino Real #5, Santa Clara, CA 95050", phone: "(408) 241-9797", website: "totalvision2020.com/location/santaclara/", lat: 37.3515, lng: -121.9629, region: "norcal", city: "Santa Clara" },
+      { brand: "Total Vision", name: "Total Vision Campbell", address: "338 E Hamilton Ave, Campbell, CA 95008", phone: "(408) 378-9900", website: "totalvision2020.com/location/campbell/", lat: 37.2931, lng: -121.9441, region: "norcal", city: "Campbell" },
+      { brand: "Total Vision", name: "Total Vision Willow Glen", address: "3021 Meridian Ave, San Jose, CA 95124", phone: "(408) 267-1717", website: "totalvision2020.com/location/willowglen/", lat: 37.2782, lng: -121.9058, region: "norcal", city: "San Jose" },
+      { brand: "Total Vision", name: "Total Vision Los Gatos", address: "233 N. Santa Cruz Avenue, Los Gatos, CA 95030", phone: "(408) 354-8888", website: "totalvision2020.com/location/losgatos/", lat: 37.2234, lng: -121.9822, region: "norcal", city: "Los Gatos" },
+      { brand: "Total Vision", name: "Total Vision Golden Hills", address: "2690 S. White Rd., Suite 255, San Jose, CA 95148", phone: "(408) 224-1088", website: "totalvision2020.com/location/goldenhills/", lat: 37.2845, lng: -121.8003, region: "norcal", city: "San Jose" },
+      { brand: "Total Vision", name: "Total Vision Santa Cruz", address: "904 Cedar St, Santa Cruz, CA 95060", phone: "(831) 457-1010", website: "totalvision2020.com/location/santacruz/", lat: 36.9749, lng: -122.0288, region: "norcal", city: "Santa Cruz" },
 
       // ==================== NORTHERN CALIFORNIA - GOLDEN VISION (4) ====================
-      { brand: "Golden Vision", name: "Golden Vision Cupertino", address: "19459 Stevens Creek Blvd #110, Cupertino, CA 95014", lat: 37.3230, lng: -122.0322, region: "norcal", city: "Cupertino" },
-      { brand: "Golden Vision", name: "Golden Vision Dublin", address: "4288 Dublin Blvd #114, Dublin, CA 94568", lat: 37.7022, lng: -121.9358, region: "norcal", city: "Dublin" },
-      { brand: "Golden Vision", name: "Golden Vision Milpitas", address: "310 Barber Ct, Milpitas, CA 95035", lat: 37.4323, lng: -121.8996, region: "norcal", city: "Milpitas" },
-      { brand: "Golden Vision", name: "Golden Vision San Francisco", address: "3251 20th Ave #231, San Francisco, CA 94132", lat: 37.7749, lng: -122.4194, region: "norcal", city: "San Francisco" },
+      { brand: "Golden Vision", name: "Golden Vision Cupertino", address: "19459 Stevens Creek Blvd #110, Cupertino, CA 95014", phone: "(408) 539-2216", website: "goldenvision2020.com/location/cupertino/", lat: 37.3230, lng: -122.0322, region: "norcal", city: "Cupertino" },
+      { brand: "Golden Vision", name: "Golden Vision Dublin", address: "4288 Dublin Blvd #114, Dublin, CA 94568", phone: "(925) 350-4258", website: "goldenvision2020.com/location/dublin/", lat: 37.7022, lng: -121.9358, region: "norcal", city: "Dublin" },
+      { brand: "Golden Vision", name: "Golden Vision Milpitas", address: "310 Barber Ct, Milpitas, CA 95035", phone: "(408) 946-6722", website: "goldenvision2020.com/location/milpitas/", lat: 37.4323, lng: -121.8996, region: "norcal", city: "Milpitas" },
+      { brand: "Golden Vision", name: "Golden Vision San Francisco", address: "3251 20th Ave #231, San Francisco, CA 94132", phone: "(415) 564-1800", website: "goldenvision2020.com/location/sanfrancisco/", lat: 37.7749, lng: -122.4194, region: "norcal", city: "San Francisco" },
 
       // ==================== SOUTHERN CALIFORNIA - TOTAL VISION (36) ====================
-      { brand: "Total Vision", name: "Total Vision Camarillo", address: "2380 Las Posas Rd, Suite C, Camarillo, CA 93010", lat: 34.2255, lng: -119.0479, region: "socal", city: "Camarillo" },
-      { brand: "Total Vision", name: "Total Vision West Hollywood", address: "8205 Santa Monica Boulevard, Suite 15, West Hollywood, CA 90046", lat: 34.0905, lng: -118.3655, region: "socal", city: "West Hollywood" },
-      { brand: "Total Vision", name: "Total Vision Pasadena", address: "1 West California Blvd (Ste 513), Pasadena, CA 91105", lat: 34.1461, lng: -118.1517, region: "socal", city: "Pasadena" },
-      { brand: "Total Vision", name: "Total Vision Diamond Bar", address: "718 N Diamond Bar Blvd, Diamond Bar, CA 91765", lat: 34.0281, lng: -117.8151, region: "socal", city: "Diamond Bar" },
-      { brand: "Total Vision", name: "Total Vision Riverside", address: "4515 Central Avenue Suite 101, Riverside, CA 92506", lat: 33.9489, lng: -117.3892, region: "socal", city: "Riverside" },
-      { brand: "Total Vision", name: "Total Vision Chino Hills", address: "2581 Chino Hills Pkwy, Chino Hills, CA 91709", lat: 33.9774, lng: -117.7473, region: "socal", city: "Chino Hills" },
-      { brand: "Total Vision", name: "Total Vision Little Tokyo", address: "334-B E. 2nd St, Los Angeles, CA 90012", lat: 34.0491, lng: -118.2419, region: "socal", city: "Los Angeles" },
-      { brand: "Total Vision", name: "Total Vision Culver City", address: "12461 W Washington Blvd, Los Angeles, CA 90066", lat: 33.9981, lng: -118.4138, region: "socal", city: "Los Angeles" },
-      { brand: "Total Vision", name: "Total Vision Long Beach", address: "2280 East Carson St., Long Beach, CA 90807", lat: 33.8301, lng: -118.1927, region: "socal", city: "Long Beach" },
-      { brand: "Total Vision", name: "Total Vision Seal Beach", address: "1190 Pacific Coast Hwy, Seal Beach, CA 90740", lat: 33.7416, lng: -118.1026, region: "socal", city: "Seal Beach" },
-      { brand: "Total Vision", name: "Total Vision Huntington Beach", address: "5092 Warner Avenue, Huntington Beach, CA 92649", lat: 33.7151, lng: -118.0453, region: "socal", city: "Huntington Beach" },
-      { brand: "Total Vision", name: "Total Vision Fountain Valley", address: "9107 Garfield Ave, Fountain Valley, CA 92708", lat: 33.7083, lng: -117.9447, region: "socal", city: "Fountain Valley" },
-      { brand: "Total Vision", name: "Total Vision Laguna Crown Valley", address: "30030 Town Center Dr., Laguna Niguel, CA 92677", lat: 33.5534, lng: -117.7141, region: "socal", city: "Laguna Niguel" },
-      { brand: "Total Vision", name: "Total Vision San Clemente", address: "140 Avenida Del Mar, San Clemente, CA 92672", lat: 33.4258, lng: -117.6148, region: "socal", city: "San Clemente" },
-      { brand: "Total Vision", name: "Total Vision RSM", address: "30212 Tomas, #170, Rancho Santa Margarita, CA 92688", lat: 33.6378, lng: -117.6052, region: "socal", city: "Rancho Santa Margarita" },
-      { brand: "Total Vision", name: "Total Vision Ladera Ranch", address: "333 Corporate Drive, Suite 120, Ladera Ranch, CA 92694", lat: 33.5718, lng: -117.6398, region: "socal", city: "Ladera Ranch" },
-      { brand: "Total Vision", name: "Total Vision Laguna La Paz", address: "27451B La Paz Rd, Laguna Niguel, CA 92677", lat: 33.5673, lng: -117.7049, region: "socal", city: "Laguna Niguel" },
-      { brand: "Total Vision", name: "Total Vision Talega", address: "1001 Avenida Pico, Suite A, San Clemente, CA 92673", lat: 33.4589, lng: -117.6209, region: "socal", city: "San Clemente" },
-      { brand: "Total Vision", name: "Total Vision Lake Elsinore", address: "32245 Mission Trail #D4, Lake Elsinore, CA 92530", lat: 33.6731, lng: -117.3165, region: "socal", city: "Lake Elsinore" },
-      { brand: "Total Vision", name: "Total Vision La Quinta", address: "78015 Main St #107, La Quinta, CA 92253", lat: 33.6729, lng: -116.3047, region: "socal", city: "La Quinta" },
-      { brand: "Total Vision", name: "Total Vision Carlsbad Plaza", address: "2540 El Camino Real, Suite B, Carlsbad, CA 92008", lat: 33.1258, lng: -117.2686, region: "socal", city: "Carlsbad" },
-      { brand: "Total Vision", name: "Total Vision Carlsbad", address: "3144 El Camino Real, #202, Carlsbad, CA 92008", lat: 33.1271, lng: -117.2691, region: "socal", city: "Carlsbad" },
-      { brand: "Total Vision", name: "Total Vision Encinitas", address: "1454 Encinitas Boulevard, Encinitas, CA 92024", lat: 33.0461, lng: -117.2588, region: "socal", city: "Encinitas" },
-      { brand: "Total Vision", name: "Total Vision Solana Beach", address: "665 San Rodolfo Drive, #119, Solana Beach, CA 92075", lat: 32.9868, lng: -117.2575, region: "socal", city: "Solana Beach" },
-      { brand: "Total Vision", name: "Total Vision Del Mar", address: "12880 Carmel Country Road, Suite D110, San Diego, CA 92130", lat: 32.9459, lng: -117.2218, region: "socal", city: "San Diego" },
-      { brand: "Total Vision", name: "Total Vision UTC – Regents", address: "7770 Regents Road, Suite 104, San Diego, CA 92122", lat: 32.8643, lng: -117.2274, region: "socal", city: "San Diego" },
-      { brand: "Total Vision", name: "Total Vision Mira Mesa", address: "8230 Mira Mesa Boulevard, B, San Diego, CA 92126", lat: 32.9155, lng: -117.1464, region: "socal", city: "San Diego" },
-      { brand: "Total Vision", name: "Total Vision Tierrasanta", address: "5990 Santo Road, San Diego, CA 92124", lat: 32.8231, lng: -117.1026, region: "socal", city: "San Diego" },
-      { brand: "Total Vision", name: "Total Vision Rancho Bernardo", address: "11717 Bernardo Plaza Court, San Diego, CA 92128", lat: 33.0359, lng: -117.0845, region: "socal", city: "San Diego" },
-      { brand: "Total Vision", name: "Total Vision El Cajon", address: "1093 E. Main Street, El Cajon, CA 92021", lat: 32.7965, lng: -116.9338, region: "socal", city: "El Cajon" },
-      { brand: "Total Vision", name: "Total Vision La Mesa", address: "7090 Parkway Drive, La Mesa, CA 91942", lat: 32.7693, lng: -117.0202, region: "socal", city: "La Mesa" },
-      { brand: "Total Vision", name: "Total Vision Lemon Grove", address: "7850 Broadway, Lemon Grove, CA 91945", lat: 32.7419, lng: -117.0321, region: "socal", city: "Lemon Grove" },
-      { brand: "Total Vision", name: "Total Vision Eastlake", address: "890 Eastlake Parkway, Suite 102, Chula Vista, CA 91914", lat: 32.6405, lng: -117.0053, region: "socal", city: "Chula Vista" },
-      { brand: "Total Vision", name: "Total Vision Bonita", address: "180 Otay Lakes Road, #201, Bonita, CA 91902", lat: 32.6503, lng: -117.0076, region: "socal", city: "Bonita" },
-      { brand: "Total Vision", name: "Total Vision Terra Nova", address: "374 East H Street #1708, Chula Vista, CA 91910", lat: 32.6344, lng: -117.0867, region: "socal", city: "Chula Vista" },
-      { brand: "Total Vision", name: "Total Vision Sports Arena", address: "3750 Sports Arena Boulevard, Suite 9, San Diego, CA 92110", lat: 32.7524, lng: -117.2091, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Camarillo", address: "2380 Las Posas Rd, Suite C, Camarillo, CA 93010", phone: "(805) 987-3020", website: "totalvision2020.com/location/camarillo/", lat: 34.2255, lng: -119.0479, region: "socal", city: "Camarillo" },
+      { brand: "Total Vision", name: "Total Vision West Hollywood", address: "8205 Santa Monica Boulevard, Suite 15, West Hollywood, CA 90046", phone: "(323) 650-2020", website: "totalvision2020.com/location/westhollywood/", lat: 34.0905, lng: -118.3655, region: "socal", city: "West Hollywood" },
+      { brand: "Total Vision", name: "Total Vision Pasadena", address: "1 West California Blvd (Ste 513), Pasadena, CA 91105", phone: "(626) 395-8888", website: "totalvision2020.com/location/pasadena/", lat: 34.1461, lng: -118.1517, region: "socal", city: "Pasadena" },
+      { brand: "Total Vision", name: "Total Vision Diamond Bar", address: "718 N Diamond Bar Blvd, Diamond Bar, CA 91765", phone: "(909) 860-1010", website: "totalvision2020.com/location/diamondbar/", lat: 34.0281, lng: -117.8151, region: "socal", city: "Diamond Bar" },
+      { brand: "Total Vision", name: "Total Vision Riverside", address: "4515 Central Avenue Suite 101, Riverside, CA 92506", phone: "(951) 784-1111", website: "totalvision2020.com/location/riverside/", lat: 33.9489, lng: -117.3892, region: "socal", city: "Riverside" },
+      { brand: "Total Vision", name: "Total Vision Chino Hills", address: "2581 Chino Hills Pkwy, Chino Hills, CA 91709", phone: "(909) 464-7004", website: "totalvision2020.com/location/chinohills/", lat: 33.9774, lng: -117.7473, region: "socal", city: "Chino Hills" },
+      { brand: "Total Vision", name: "Total Vision Little Tokyo", address: "334-B E. 2nd St, Los Angeles, CA 90012", phone: "(213) 617-7777", website: "totalvision2020.com/location/littletokyo/", lat: 34.0491, lng: -118.2419, region: "socal", city: "Los Angeles" },
+      { brand: "Total Vision", name: "Total Vision Culver City", address: "12461 W Washington Blvd, Los Angeles, CA 90066", phone: "(310) 390-4040", website: "totalvision2020.com/location/culvercity/", lat: 33.9981, lng: -118.4138, region: "socal", city: "Los Angeles" },
+      { brand: "Total Vision", name: "Total Vision Long Beach", address: "2280 East Carson St., Long Beach, CA 90807", phone: "(562) 424-8844", website: "totalvision2020.com/location/longbeach/", lat: 33.8301, lng: -118.1927, region: "socal", city: "Long Beach" },
+      { brand: "Total Vision", name: "Total Vision Seal Beach", address: "1190 Pacific Coast Hwy, Seal Beach, CA 90740", phone: "(562) 493-1234", website: "totalvision2020.com/location/sealbeach/", lat: 33.7416, lng: -118.1026, region: "socal", city: "Seal Beach" },
+      { brand: "Total Vision", name: "Total Vision Huntington Beach", address: "5092 Warner Avenue, Huntington Beach, CA 92649", phone: "(714) 842-8040", website: "totalvision2020.com/location/huntingtonbeach/", lat: 33.7151, lng: -118.0453, region: "socal", city: "Huntington Beach" },
+      { brand: "Total Vision", name: "Total Vision Fountain Valley", address: "9107 Garfield Ave, Fountain Valley, CA 92708", phone: "(714) 963-3333", website: "totalvision2020.com/location/fountainvalley/", lat: 33.7083, lng: -117.9447, region: "socal", city: "Fountain Valley" },
+      { brand: "Total Vision", name: "Total Vision Laguna Crown Valley", address: "30030 Town Center Dr., Laguna Niguel, CA 92677", phone: "(949) 249-5000", website: "totalvision2020.com/location/lagunacrownvalley/", lat: 33.5534, lng: -117.7141, region: "socal", city: "Laguna Niguel" },
+      { brand: "Total Vision", name: "Total Vision San Clemente", address: "140 Avenida Del Mar, San Clemente, CA 92672", phone: "(949) 492-0707", website: "totalvision2020.com/location/sanclemente/", lat: 33.4258, lng: -117.6148, region: "socal", city: "San Clemente" },
+      { brand: "Total Vision", name: "Total Vision RSM", address: "30212 Tomas, #170, Rancho Santa Margarita, CA 92688", phone: "(949) 589-8877", website: "totalvision2020.com/location/rsm/", lat: 33.6378, lng: -117.6052, region: "socal", city: "Rancho Santa Margarita" },
+      { brand: "Total Vision", name: "Total Vision Ladera Ranch", address: "333 Corporate Drive, Suite 120, Ladera Ranch, CA 92694", phone: "(949) 429-4848", website: "totalvision2020.com/location/laderaranch/", lat: 33.5718, lng: -117.6398, region: "socal", city: "Ladera Ranch" },
+      { brand: "Total Vision", name: "Total Vision Laguna La Paz", address: "27451B La Paz Rd, Laguna Niguel, CA 92677", phone: "(949) 363-2020", website: "totalvision2020.com/location/lagunalapaz/", lat: 33.5673, lng: -117.7049, region: "socal", city: "Laguna Niguel" },
+      { brand: "Total Vision", name: "Total Vision Talega", address: "1001 Avenida Pico, Suite A, San Clemente, CA 92673", phone: "(949) 388-5000", website: "totalvision2020.com/location/talega/", lat: 33.4589, lng: -117.6209, region: "socal", city: "San Clemente" },
+      { brand: "Total Vision", name: "Total Vision Lake Elsinore", address: "32245 Mission Trail #D4, Lake Elsinore, CA 92530", phone: "(951) 471-2020", website: "totalvision2020.com/location/lakeelsinore/", lat: 33.6731, lng: -117.3165, region: "socal", city: "Lake Elsinore" },
+      { brand: "Total Vision", name: "Total Vision La Quinta", address: "78015 Main St #107, La Quinta, CA 92253", phone: "(760) 564-8844", website: "totalvision2020.com/location/laquinta/", lat: 33.6729, lng: -116.3047, region: "socal", city: "La Quinta" },
+      { brand: "Total Vision", name: "Total Vision Carlsbad Plaza", address: "2540 El Camino Real, Suite B, Carlsbad, CA 92008", phone: "(760) 729-4000", website: "totalvision2020.com/location/carlsbadplaza/", lat: 33.1258, lng: -117.2686, region: "socal", city: "Carlsbad" },
+      { brand: "Total Vision", name: "Total Vision Carlsbad", address: "3144 El Camino Real, #202, Carlsbad, CA 92008", phone: "(760) 931-3820", website: "totalvision2020.com/location/carlsbad/", lat: 33.1271, lng: -117.2691, region: "socal", city: "Carlsbad" },
+      { brand: "Total Vision", name: "Total Vision Encinitas", address: "1454 Encinitas Boulevard, Encinitas, CA 92024", phone: "(760) 942-6600", website: "totalvision2020.com/location/encinitas/", lat: 33.0461, lng: -117.2588, region: "socal", city: "Encinitas" },
+      { brand: "Total Vision", name: "Total Vision Solana Beach", address: "665 San Rodolfo Drive, #119, Solana Beach, CA 92075", phone: "(858) 755-8944", website: "totalvision2020.com/location/solanabeach/", lat: 32.9868, lng: -117.2575, region: "socal", city: "Solana Beach" },
+      { brand: "Total Vision", name: "Total Vision Del Mar", address: "12880 Carmel Country Road, Suite D110, San Diego, CA 92130", phone: "(858) 618-8000", website: "totalvision2020.com/location/delmar/", lat: 32.9459, lng: -117.2218, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision UTC – Regents", address: "7770 Regents Road, Suite 104, San Diego, CA 92122", phone: "(858) 546-6600", website: "totalvision2020.com/location/utc/", lat: 32.8643, lng: -117.2274, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Mira Mesa", address: "8230 Mira Mesa Boulevard, B, San Diego, CA 92126", phone: "(858) 549-3500", website: "totalvision2020.com/location/miramesa/", lat: 32.9155, lng: -117.1464, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Tierrasanta", address: "5990 Santo Road, San Diego, CA 92124", phone: "(619) 698-2020", website: "totalvision2020.com/location/tierrasanta/", lat: 32.8231, lng: -117.1026, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision Rancho Bernardo", address: "11717 Bernardo Plaza Court, San Diego, CA 92128", phone: "(858) 675-1500", website: "totalvision2020.com/location/ranchobernardo/", lat: 33.0359, lng: -117.0845, region: "socal", city: "San Diego" },
+      { brand: "Total Vision", name: "Total Vision El Cajon", address: "1093 E. Main Street, El Cajon, CA 92021", phone: "(619) 441-4444", website: "totalvision2020.com/location/elcajon/", lat: 32.7965, lng: -116.9338, region: "socal", city: "El Cajon" },
+      { brand: "Total Vision", name: "Total Vision La Mesa", address: "7090 Parkway Drive, La Mesa, CA 91942", phone: "(619) 667-8080", website: "totalvision2020.com/location/lamesa/", lat: 32.7693, lng: -117.0202, region: "socal", city: "La Mesa" },
+      { brand: "Total Vision", name: "Total Vision Lemon Grove", address: "7850 Broadway, Lemon Grove, CA 91945", phone: "(619) 825-2255", website: "totalvision2020.com/location/lemongrove/", lat: 32.7419, lng: -117.0321, region: "socal", city: "Lemon Grove" },
+      { brand: "Total Vision", name: "Total Vision Eastlake", address: "890 Eastlake Parkway, Suite 102, Chula Vista, CA 91914", phone: "(619) 422-5757", website: "totalvision2020.com/location/eastlake/", lat: 32.6405, lng: -117.0053, region: "socal", city: "Chula Vista" },
+      { brand: "Total Vision", name: "Total Vision Bonita", address: "180 Otay Lakes Road, #201, Bonita, CA 91902", phone: "(619) 498-2500", website: "totalvision2020.com/location/bonita/", lat: 32.6503, lng: -117.0076, region: "socal", city: "Bonita" },
+      { brand: "Total Vision", name: "Total Vision Terra Nova", address: "374 East H Street #1708, Chula Vista, CA 91910", phone: "(619) 320-0700", website: "totalvision2020.com/location/terranova/", lat: 32.6344, lng: -117.0867, region: "socal", city: "Chula Vista" },
+      { brand: "Total Vision", name: "Total Vision Sports Arena", address: "3750 Sports Arena Boulevard, Suite 9, San Diego, CA 92110", phone: "(619) 224-0570", website: "totalvision2020.com/location/sportsarena/", lat: 32.7524, lng: -117.2091, region: "socal", city: "San Diego" },
 
       // ==================== SOUTHERN CALIFORNIA - GOLDEN VISION (5) ====================
-      { brand: "Golden Vision", name: "Golden Vision Arcadia", address: "655 W. Duarte Rd. Suite B, Arcadia, CA 91007", lat: 34.1397, lng: -118.0353, region: "socal", city: "Arcadia" },
-      { brand: "Golden Vision", name: "Golden Vision Irvine", address: "15435 Jeffrey Rd #138, Irvine, CA 92618", lat: 33.6846, lng: -117.8265, region: "socal", city: "Irvine" },
-      { brand: "Golden Vision", name: "Golden Vision Rowland Heights", address: "1015 S Nogales St, Suite 109, Rowland Heights, CA 91748", lat: 33.9761, lng: -117.9053, region: "socal", city: "Rowland Heights" },
-      { brand: "Golden Vision", name: "Golden Vision San Gabriel", address: "140 W Valley Blvd #115, San Gabriel, CA 91776", lat: 34.0961, lng: -118.1058, region: "socal", city: "San Gabriel" },
-      { brand: "Golden Vision", name: "Golden Vision San Diego Plaza", address: "7330 Clairemont Mesa Blvd, Suite A102, San Diego, CA 92111", lat: 32.7157, lng: -117.1611, region: "socal", city: "San Diego" }
+      { brand: "Golden Vision", name: "Golden Vision Arcadia", address: "655 W. Duarte Rd. Suite B, Arcadia, CA 91007", phone: "(626) 784-7121", website: "goldenvision2020.com/location/arcadia/", lat: 34.1397, lng: -118.0353, region: "socal", city: "Arcadia" },
+      { brand: "Golden Vision", name: "Golden Vision Irvine", address: "15435 Jeffrey Rd #138, Irvine, CA 92618", phone: "(949) 390-5347", website: "goldenvision2020.com/location/irvine/", lat: 33.6846, lng: -117.8265, region: "socal", city: "Irvine" },
+      { brand: "Golden Vision", name: "Golden Vision Rowland Heights", address: "1015 S Nogales St, Suite 109, Rowland Heights, CA 91748", phone: "(626) 965-9900", website: "goldenvision2020.com/location/rowlandheights/", lat: 33.9761, lng: -117.9053, region: "socal", city: "Rowland Heights" },
+      { brand: "Golden Vision", name: "Golden Vision San Gabriel", address: "140 W Valley Blvd #115, San Gabriel, CA 91776", phone: "(626) 286-8888", website: "goldenvision2020.com/location/sangabriel/", lat: 34.0961, lng: -118.1058, region: "socal", city: "San Gabriel" },
+      { brand: "Golden Vision", name: "Golden Vision San Diego Plaza", address: "7330 Clairemont Mesa Blvd, Suite A102, San Diego, CA 92111", phone: "(858) 571-4040", website: "goldenvision2020.com/location/sandiegoplaza/", lat: 32.7157, lng: -117.1611, region: "socal", city: "San Diego" }
     ];
 
     let map;
@@ -789,8 +843,17 @@
         const div = document.createElement('div');
         div.className = 'location-item';
         div.setAttribute('data-idx', globalIdx);
-        const brandEmoji = loc.brand === 'Golden Vision' ? '✨' : '👁️';
-        div.innerHTML = `<div class="location-name"><span>${brandEmoji} ${loc.name}</span><span class="region-badge-sm">${loc.region === 'norcal' ? 'NorCal' : 'SoCal'}</span></div><div class="location-address">${loc.address.split(',')[0]}</div>`;
+        const regionLabel = loc.region === 'norcal' ? 'NorCal' : 'SoCal';
+        const address = loc.address.split(',').slice(0, 2).join(',').trim();
+        div.innerHTML = `
+          <div class="location-name">
+            <span class="location-name-text">${loc.name}</span>
+            <span class="location-region-badge">${regionLabel}</span>
+          </div>
+          <div class="location-address">${address}</div>
+          <div class="location-phone">${loc.city}, CA | ${loc.phone}</div>
+          <a href="https://${loc.website}" class="location-website">${loc.website}</a>
+        `;
         div.onclick = () => { map.flyTo([loc.lat, loc.lng], 13); highlightSidebar(globalIdx); findDotMarker(loc)?.openPopup(); };
         container.appendChild(div);
       });
