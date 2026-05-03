@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Total Vision California — Official Locations</title>
+  <link rel="icon" type="image/png" href="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
+  <meta name="msapplication-TileImage" content="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
@@ -206,14 +208,14 @@
       top: 20px;
       right: 20px;
       z-index: 1000;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: transparent;
+      border: none;
       padding: 14px 18px;
       border-radius: 4px;
-      box-shadow: var(--shadow);
+      box-shadow: none;
       backdrop-filter: blur(8px);
       font-size: 0.85rem;
-      color: var(--text-primary);
+      color: #131416;
     }
 
     .legend h4 {
@@ -222,7 +224,7 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: var(--text-primary);
+      color: #131416;
     }
 
     .legend-item {
@@ -541,13 +543,25 @@
       }
     }
     
-    .attribution {
+    .logo-header {
       text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-header img {
+      max-width: 200px;
+      height: auto;
+      display: inline-block;
+    }
+
+    .attribution {
+      text-align: left;
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 16px;
       font-weight: 500;
       letter-spacing: 0.3px;
+      font-family: Courier, monospace;
     }
   </style>
 </head>
