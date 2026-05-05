@@ -1105,10 +1105,8 @@
       searchMode = mode;
       // Update toggle UI
       const toggle = document.getElementById('searchModeToggle');
-      const label = document.getElementById('toggleLabel');
       const isShowAll = mode === 'show-all';
       toggle.classList.toggle('active', isShowAll);
-      label.textContent = isShowAll ? 'Show All' : 'Filter';
       refreshMap();
     }
 
