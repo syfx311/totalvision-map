@@ -175,40 +175,59 @@
       color: var(--text-secondary);
     }
 
-    .search-mode-toggle {
+    .search-mode-toggle-wrapper {
       display: flex;
-      gap: 0;
-      border: 1px solid var(--btn-border);
-      border-radius: 4px;
-      background: var(--btn-bg);
-      padding: 0;
+      align-items: center;
+      gap: 8px;
     }
 
-    .toggle-option {
-      background: transparent;
-      border: none;
-      padding: 8px 14px;
+    .search-mode-toggle-label {
       font-size: 0.8rem;
       font-weight: 600;
-      cursor: pointer;
-      color: var(--btn-text);
-      transition: all 0.2s ease;
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-right: 1px solid var(--btn-border);
+      white-space: nowrap;
     }
 
-    .toggle-option:last-child {
-      border-right: none;
+    .search-mode-toggle {
+      position: relative;
+      width: 56px;
+      height: 28px;
+      background: var(--btn-border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .toggle-option.active {
+    .search-mode-toggle.active {
       background: var(--btn-active);
-      color: white;
     }
 
-    .toggle-option:hover:not(.active) {
-      background: var(--light-cyan);
+    .search-mode-toggle::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-mode-toggle.active::after {
+      left: 30px;
+    }
+
+    .search-mode-toggle:hover {
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
     }
 
     .stats {
@@ -604,12 +623,22 @@
         padding: 6px 14px;
         font-size: 0.75rem;
       }
-      .search-mode-toggle {
-        gap: 0;
+      .search-mode-toggle-wrapper {
+        gap: 6px;
       }
-      .toggle-option {
-        padding: 6px 10px;
+      .search-mode-toggle-label {
         font-size: 0.7rem;
+      }
+      .search-mode-toggle {
+        width: 48px;
+        height: 24px;
+      }
+      .search-mode-toggle::after {
+        width: 20px;
+        height: 20px;
+      }
+      .search-mode-toggle.active::after {
+        left: 26px;
       }
     }
     
@@ -654,9 +683,10 @@
 
   <div class="search-container">
     <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, location or name...">
-    <div class="search-mode-toggle">
-      <button class="toggle-option active" data-mode="filter">Filter</button>
-      <button class="toggle-option" data-mode="show-all">Show All</button>
+    <div class="search-mode-toggle-wrapper">
+      <span class="search-mode-toggle-label" id="toggleLabel">Filter</span>
+      <button class="search-mode-toggle" id="searchModeToggle"></button>
+      <span class="search-mode-toggle-label">Show All</span>
     </div>
   </div>
 
@@ -1074,9 +1104,11 @@
     function setSearchMode(mode) {
       searchMode = mode;
       // Update toggle UI
-      document.querySelectorAll('.toggle-option').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.mode === mode);
-      });
+      const toggle = document.getElementById('searchModeToggle');
+      const label = document.getElementById('toggleLabel');
+      const isShowAll = mode === 'show-all';
+      toggle.classList.toggle('active', isShowAll);
+      label.textContent = isShowAll ? 'Show All' : 'Filter';
       refreshMap();
     }
 
@@ -1109,8 +1141,10 @@
       document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
 
       // Search mode toggle
-      document.querySelectorAll('.toggle-option').forEach(btn => {
-        btn.addEventListener('click', () => setSearchMode(btn.dataset.mode));
+      const searchModeToggle = document.getElementById('searchModeToggle');
+      searchModeToggle.addEventListener('click', () => {
+        const newMode = searchMode === 'filter' ? 'show-all' : 'filter';
+        setSearchMode(newMode);
       });
 
       const searchInput = document.getElementById('searchInput');
