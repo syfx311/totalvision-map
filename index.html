@@ -149,7 +149,9 @@
     .search-container {
       display: flex;
       justify-content: center;
+      gap: 12px;
       margin-bottom: 16px;
+      align-items: center;
     }
 
     .search-box {
@@ -171,6 +173,42 @@
 
     .search-box::placeholder {
       color: var(--text-secondary);
+    }
+
+    .search-mode-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      background: var(--btn-bg);
+      padding: 0;
+    }
+
+    .toggle-option {
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--btn-text);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-right: 1px solid var(--btn-border);
+    }
+
+    .toggle-option:last-child {
+      border-right: none;
+    }
+
+    .toggle-option.active {
+      background: var(--btn-active);
+      color: white;
+    }
+
+    .toggle-option:hover:not(.active) {
+      background: var(--light-cyan);
     }
 
     .stats {
@@ -362,6 +400,14 @@
       background: #224060;
     }
 
+    .location-item.non-matching {
+      opacity: 0.55;
+    }
+
+    .location-item.non-matching:hover {
+      opacity: 0.75;
+    }
+
     .location-item::before {
       content: counter(location-counter);
       position: absolute;
@@ -502,6 +548,23 @@
       box-shadow: 0 4px 12px rgba(0, 84, 164, 0.4);
     }
 
+    .smart-label.highlighted-label {
+      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      border-color: #d4a500;
+      color: #131416;
+      animation: pulse-glow 1.5s ease-in-out infinite;
+      box-shadow: 0 0 12px rgba(212, 165, 0, 0.6);
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 12px rgba(212, 165, 0, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(212, 165, 0, 0.9);
+      }
+    }
+
     .smart-label strong {
       font-weight: 800;
       color: white;
@@ -540,6 +603,13 @@
         width: 220px;
         padding: 6px 14px;
         font-size: 0.75rem;
+      }
+      .search-mode-toggle {
+        gap: 0;
+      }
+      .toggle-option {
+        padding: 6px 10px;
+        font-size: 0.7rem;
       }
     }
     
@@ -584,6 +654,10 @@
 
   <div class="search-container">
     <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, location or name...">
+    <div class="search-mode-toggle">
+      <button class="toggle-option active" data-mode="filter">Filter</button>
+      <button class="toggle-option" data-mode="show-all">Show All</button>
+    </div>
   </div>
 
   <div class="stats" id="statsDisplay">📍 56 locations — Search enabled</div>
@@ -687,6 +761,7 @@
     let currentFilter = 'all';
     let currentBrandFilter = 'all';
     let currentSearchTerm = '';
+    let searchMode = 'filter'; // 'filter' or 'show-all'
     let markersLayer = L.layerGroup();
     let labelsLayer = L.layerGroup();
     let labelObjects = [];
@@ -701,8 +776,8 @@
         filtered = filtered.filter(loc => loc.brand === currentBrandFilter);
       }
 
-      // Apply search filter
-      if (currentSearchTerm.trim() !== '') {
+      // In filter mode, apply search filter to hide non-matching
+      if (searchMode === 'filter' && currentSearchTerm.trim() !== '') {
         const term = currentSearchTerm.toLowerCase().trim();
         filtered = filtered.filter(loc =>
           loc.name.toLowerCase().includes(term) ||
@@ -713,6 +788,19 @@
       }
 
       return filtered;
+    }
+
+    function getSearchMatches(locations) {
+      if (searchMode === 'show-all' && currentSearchTerm.trim() !== '') {
+        const term = currentSearchTerm.toLowerCase().trim();
+        return locations.filter(loc =>
+          loc.name.toLowerCase().includes(term) ||
+          loc.city.toLowerCase().includes(term) ||
+          loc.brand.toLowerCase().includes(term) ||
+          loc.address.toLowerCase().includes(term)
+        );
+      }
+      return [];
     }
 
     // Smart label collision avoidance
@@ -790,10 +878,11 @@
       updateTimeout = setTimeout(() => { if (map) updateLabelPositions(); }, 50);
     }
     
-    function createLabelMarker(location, latLng) {
+    function createLabelMarker(location, latLng, isHighlighted = false) {
       let shortName = location.name.replace("Total Vision ", "");
       if (shortName.length > 22) shortName = shortName.substring(0, 20) + "…";
-      const html = `<div class="smart-label"><strong>👁️</strong> ${shortName}</div>`;
+      const highlightClass = isHighlighted ? ' highlighted-label' : '';
+      const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
       const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [null, null], iconAnchor: [0, 0] });
       const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
       marker.on('click', () => {
@@ -832,15 +921,18 @@
       labelsLayer.clearLayers();
       labelObjects = [];
       const filtered = getFilteredLocations();
+      const matches = getSearchMatches(filtered);
+
       filtered.forEach(loc => {
         const dot = createDotMarker(loc);
         markersLayer.addLayer(dot);
-        const labelMarker = createLabelMarker(loc, L.latLng(loc.lat, loc.lng));
+        const isMatch = matches.includes(loc);
+        const labelMarker = createLabelMarker(loc, L.latLng(loc.lat, loc.lng), isMatch);
         labelsLayer.addLayer(labelMarker);
         labelObjects.push({ marker: labelMarker, location: loc, latLng: L.latLng(loc.lat, loc.lng) });
       });
       setTimeout(() => updateLabelPositions(), 100);
-      renderSidebar(filtered);
+      renderSidebar(filtered, matches);
 
       const norcalCount = filtered.filter(l => l.region === 'norcal').length;
       const socalCount = filtered.filter(l => l.region === 'socal').length;
@@ -848,10 +940,11 @@
       const gvCount = filtered.filter(l => l.brand === 'Golden Vision').length;
       const searchInfo = currentSearchTerm ? ` — Search: "${currentSearchTerm}"` : '';
       const brandInfo = currentBrandFilter !== 'all' ? ` — ${currentBrandFilter}` : '';
-      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations${brandInfo} (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}`;
+      const modeInfo = searchMode === 'show-all' && currentSearchTerm ? ` (${matches.length} matches)` : '';
+      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations${brandInfo} (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}${modeInfo}`;
     }
     
-    function renderSidebar(filtered) {
+    function renderSidebar(filtered, matches = []) {
       const container = document.getElementById('locationList');
       container.innerHTML = '';
       document.getElementById('sidebarCount').innerText = `(${filtered.length})`;
@@ -864,10 +957,22 @@
         return;
       }
 
-      filtered.forEach((loc, idx) => {
+      // In show-all mode with search, sort matches to top
+      let displayOrder = filtered;
+      if (searchMode === 'show-all' && matches.length > 0) {
+        displayOrder = [...matches, ...filtered.filter(loc => !matches.includes(loc))];
+      }
+
+      displayOrder.forEach((loc, idx) => {
         const globalIdx = locations.indexOf(loc);
         const div = document.createElement('div');
         div.className = 'location-item';
+
+        // Mark non-matching items in show-all mode
+        if (searchMode === 'show-all' && currentSearchTerm && !matches.includes(loc)) {
+          div.classList.add('non-matching');
+        }
+
         div.setAttribute('data-idx', globalIdx);
         const regionLabel = loc.region === 'norcal' ? 'NorCal' : 'SoCal';
         const address = loc.address.split(',').slice(0, 2).join(',').trim();
@@ -901,16 +1006,31 @@
       const searchInput = document.getElementById('searchInput');
       currentSearchTerm = searchInput.value;
       refreshMap();
-      
-      // If search yields results and we're in "all" filter, adjust view to show all results
-      const filtered = getFilteredLocations();
-      if (filtered.length > 0 && currentFilter === 'all') {
-        // Optional: fit bounds to show all search results
-        const bounds = L.latLngBounds(filtered.map(loc => [loc.lat, loc.lng]));
-        if (filtered.length > 1) {
-          map.fitBounds(bounds, { padding: [50, 50] });
-        } else if (filtered.length === 1) {
-          map.flyTo([filtered[0].lat, filtered[0].lng], 12);
+
+      // In filter mode, fit bounds to filtered results
+      if (searchMode === 'filter') {
+        const filtered = getFilteredLocations();
+        if (filtered.length > 0 && currentFilter === 'all') {
+          const bounds = L.latLngBounds(filtered.map(loc => [loc.lat, loc.lng]));
+          if (filtered.length > 1) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+          } else if (filtered.length === 1) {
+            map.flyTo([filtered[0].lat, filtered[0].lng], 12);
+          }
+        }
+      }
+      // In show-all mode, fit bounds to only matched results if search is active
+      else if (searchMode === 'show-all' && currentSearchTerm.trim() !== '') {
+        const allFiltered = locations.filter(loc => currentFilter === 'all' || loc.region === currentFilter);
+        const filtered = currentBrandFilter !== 'all' ? allFiltered.filter(loc => loc.brand === currentBrandFilter) : allFiltered;
+        const matches = getSearchMatches(filtered);
+        if (matches.length > 0) {
+          const bounds = L.latLngBounds(matches.map(loc => [loc.lat, loc.lng]));
+          if (matches.length > 1) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+          } else if (matches.length === 1) {
+            map.flyTo([matches[0].lat, matches[0].lng], 12);
+          }
         }
       }
     }
@@ -951,6 +1071,15 @@
       refreshMap();
     }
 
+    function setSearchMode(mode) {
+      searchMode = mode;
+      // Update toggle UI
+      document.querySelectorAll('.toggle-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      refreshMap();
+    }
+
     function init() {
       map = L.map('map').setView([36.5, -119.2], 6.4);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
@@ -978,6 +1107,11 @@
 
       document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
       document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
+
+      // Search mode toggle
+      document.querySelectorAll('.toggle-option').forEach(btn => {
+        btn.addEventListener('click', () => setSearchMode(btn.dataset.mode));
+      });
 
       const searchInput = document.getElementById('searchInput');
       searchInput.addEventListener('input', handleSearch);
