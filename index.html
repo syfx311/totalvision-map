@@ -29,138 +29,230 @@
       --text-dark: #131416;
       --text-light: #4a627a;
 
-      --bg-primary: #f5f7fa;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fb;
       --text-primary: #131416;
-      --text-secondary: #4a627a;
-      --card-bg: rgba(255, 255, 255, 0.98);
-      --card-border: #e2edf7;
-      --btn-bg: white;
-      --btn-border: #cbdcec;
-      --btn-text: #0054A4;
+      --text-secondary: #6b7280;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --btn-bg: transparent;
+      --btn-border: #d1d5db;
+      --btn-text: #374151;
       --btn-active: #0054A4;
-      --item-bg: #f8fafd;
-      --item-hover: #e0f3f9;
-      --item-border: #d5e8f0;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      --item-bg: #f8f9fb;
+      --item-hover: #f3f4f6;
+      --item-border: #e5e7eb;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
       --label-bg: linear-gradient(135deg, rgba(18, 37, 58, 0.96), rgba(12, 25, 45, 0.98));
       --label-border: rgba(255, 215, 150, 0.6);
-      --search-bg: white;
-      --search-border: #cbdcec;
+      --search-bg: #ffffff;
+      --search-border: #d1d5db;
       --search-text: #131416;
+      --pill-gap: 12px;
     }
 
     body.dark {
       --bg-primary: #0f172a;
+      --bg-secondary: #1a2f47;
       --text-primary: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --card-bg: rgba(18, 37, 58, 0.96);
-      --card-border: rgba(71, 85, 105, 0.6);
-      --btn-bg: #1a2f47;
-      --btn-border: #334155;
-      --btn-text: #e2e8f0;
+      --text-secondary: #9ca3af;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --btn-bg: transparent;
+      --btn-border: #475569;
+      --btn-text: #cbd5e1;
       --btn-active: #00AEEF;
       --item-bg: #1a2f47;
       --item-hover: #224060;
       --item-border: #334155;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
       --label-bg: linear-gradient(135deg, rgba(18, 37, 58, 0.96), rgba(12, 25, 45, 0.98));
       --label-border: rgba(251, 191, 36, 0.6);
-      --search-bg: #1a2f47;
-      --search-border: #334155;
+      --search-bg: #1e293b;
+      --search-border: #475569;
       --search-text: #e2e8f0;
     }
 
     body {
-      font-family: 'century-gothic', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
       background: var(--bg-primary);
-      padding: 20px;
       color: var(--text-primary);
-      transition: background 0.3s ease, color 0.3s ease;
-      letter-spacing: 0.8px;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-      letter-spacing: 1.82px;
-      color: #0054A4;
-      text-transform: uppercase;
-    }
-
-    .subhead {
-      text-align: center;
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
-
-    .controls {
+    .page-container {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .header-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--primary-blue);
+      letter-spacing: -0.3px;
+    }
+
+    body.dark .header-text h1 {
+      color: var(--secondary-blue);
+    }
+
+    .header-text .subhead {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
       gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
       align-items: center;
     }
 
-    .filter-btn, .action-btn, .brand-filter {
-      background: var(--btn-bg);
-      border: 1px solid var(--btn-border);
-      padding: 8px 20px;
-      border-radius: 4px;
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--item-hover);
+    }
+
+    .filters-container {
+      padding: 0 32px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .filters-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-group-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      min-width: 70px;
+    }
+
+    .segmented-controls {
+      display: flex;
+      gap: 0;
+      background: var(--item-bg);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .filter-btn, .brand-filter {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
       font-weight: 500;
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s ease;
       color: var(--btn-text);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      border-radius: 6px;
+      white-space: nowrap;
     }
 
     .filter-btn:hover, .brand-filter:hover {
-      background: var(--light-cyan);
-      border-color: var(--primary-blue);
+      background: rgba(0, 84, 164, 0.08);
+      color: var(--primary-blue);
+    }
+
+    body.dark .filter-btn:hover, body.dark .brand-filter:hover {
+      background: rgba(0, 174, 239, 0.1);
+      color: var(--secondary-blue);
     }
 
     .filter-btn.active, .brand-filter.active {
       background: var(--btn-active);
       color: white;
-      border-color: var(--btn-active);
     }
 
     .brand-filter.active[data-brand="Golden Vision"] {
-      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      background: #d4a500;
       color: #131416;
-      border-color: #d4a500;
     }
 
     body.dark .brand-filter.active[data-brand="Golden Vision"] {
-      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      background: #d4a500;
       color: #131416;
-      border-color: #d4a500;
+    }
+
+    .search-section {
+      padding: 0 32px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .search-content {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px 0;
     }
 
     .search-container {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 16px;
       align-items: center;
+      margin-bottom: 12px;
     }
 
     .search-box {
+      flex: 1;
       background: var(--search-bg);
       border: 1px solid var(--search-border);
-      border-radius: 4px;
-      padding: 10px 18px;
-      width: 300px;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
       color: var(--search-text);
       outline: none;
       transition: all 0.2s;
@@ -168,136 +260,144 @@
 
     .search-box:focus {
       border-color: var(--primary-blue);
-      box-shadow: 0 0 0 2px rgba(0, 84, 164, 0.1);
+      box-shadow: 0 0 0 3px rgba(0, 84, 164, 0.1);
+    }
+
+    body.dark .search-box:focus {
+      box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.1);
     }
 
     .search-box::placeholder {
       color: var(--text-secondary);
     }
 
-    .search-mode-toggle-wrapper {
+    .search-toggle-wrapper {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      background: var(--item-bg);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
     }
 
-    .search-mode-toggle-label {
-      font-size: 0.8rem;
+    .toggle-label {
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      padding: 0 8px;
       white-space: nowrap;
     }
 
     .search-mode-toggle {
       position: relative;
-      width: 56px;
-      height: 28px;
-      background: var(--btn-border);
-      border-radius: 14px;
+      width: 50px;
+      height: 24px;
+      background: var(--card-border);
+      border-radius: 12px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.2s ease;
       border: none;
       padding: 0;
       display: flex;
       align-items: center;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .search-mode-toggle.active {
       background: var(--btn-active);
     }
 
+    body.dark .search-mode-toggle.active {
+      background: var(--secondary-blue);
+    }
+
     .search-mode-toggle::after {
       content: '';
       position: absolute;
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       background: white;
       border-radius: 50%;
       top: 2px;
       left: 2px;
-      transition: left 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      transition: left 0.2s ease;
     }
 
     .search-mode-toggle.active::after {
-      left: 30px;
+      left: 28px;
     }
 
-    .search-mode-toggle:hover {
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
-    }
-
-    .stats {
-      text-align: center;
-      font-size: 0.9rem;
+    .search-helper-text {
+      font-size: 0.8rem;
       color: var(--text-secondary);
-      margin-bottom: 18px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
+      margin-top: 8px;
     }
 
-    .container {
-      max-width: 1400px;
+    .main-content {
+      flex: 1;
+      padding: 24px 32px;
+      background: var(--bg-primary);
+    }
+
+    .main-layout {
+      max-width: 1600px;
       margin: 0 auto;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      height: 100%;
     }
 
     .map-wrapper {
-      flex: 3;
-      min-width: 260px;
-      height: 68vh;
-      min-height: 520px;
-      border-radius: 4px;
+      background: var(--card-bg);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      background: #1a2634;
+      box-shadow: var(--shadow-md);
       border: 1px solid var(--card-border);
       position: relative;
+      min-height: 600px;
     }
 
     .legend {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 16px;
+      right: 16px;
       z-index: 1000;
-      background: transparent;
-      border: none;
-      padding: 14px 18px;
-      border-radius: 4px;
-      box-shadow: none;
-      backdrop-filter: blur(8px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
       font-size: 0.85rem;
-      color: #131416;
     }
 
     .legend h4 {
       margin: 0 0 10px 0;
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 600;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: #131416;
+      color: var(--text-secondary);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 6px 0;
+      margin: 8px 0;
       font-weight: 500;
+      color: var(--text-primary);
     }
 
     .legend-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      border: 2px solid white;
+      border: 1.5px solid white;
       flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .legend-dot.total-vision {
@@ -305,34 +405,40 @@
     }
 
     .legend-dot.golden-vision {
-      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      background: #d4a500;
     }
 
     .map-fullscreen-btn {
       position: absolute;
-      bottom: 20px;
-      right: 20px;
+      bottom: 16px;
+      right: 16px;
       z-index: 1000;
       background: var(--btn-active);
-      border: 1px solid var(--btn-active);
+      border: none;
       padding: 10px 16px;
-      border-radius: 4px;
+      border-radius: 8px;
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       color: white;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 84, 164, 0.2);
+      box-shadow: var(--shadow-md);
       display: flex;
       align-items: center;
       gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .map-fullscreen-btn:hover {
-      background: #003a7a;
-      border-color: #003a7a;
+      background: #003d7a;
+      box-shadow: 0 8px 12px rgba(0, 84, 164, 0.3);
+    }
+
+    body.dark .map-fullscreen-btn {
+      background: var(--secondary-blue);
+    }
+
+    body.dark .map-fullscreen-btn:hover {
+      background: #0099d8;
     }
 
     .map-wrapper.fullscreen {
@@ -344,6 +450,7 @@
       z-index: 9999;
       border-radius: 0;
       margin: 0;
+      border: none;
     }
 
     #map {
@@ -352,116 +459,84 @@
     }
 
     .sidebar {
-      flex: 1;
-      min-width: 280px;
       background: var(--card-bg);
-      backdrop-filter: blur(2px);
-      border-radius: 4px;
-      padding: 18px 14px;
-      box-shadow: var(--shadow);
-      overflow-y: auto;
-      max-height: 68vh;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-md);
       border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      max-height: 650px;
     }
 
     .sidebar h3 {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      margin-bottom: 14px;
-      padding-left: 10px;
-      border-left: 4px solid var(--primary-blue);
-      color: #0054A4;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    body.dark .sidebar h3 {
-      color: #00AEEF;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      padding: 0;
+      border: none;
     }
 
     .location-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .location-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .location-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .location-list::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .location-list::-webkit-scrollbar-thumb:hover {
+      background: var(--btn-border);
     }
 
     .location-item {
-      padding: 14px 12px;
-      border-radius: 4px;
+      padding: 12px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
       font-size: 0.75rem;
-      border: none;
+      border: 1px solid transparent;
       counter-increment: location-counter;
       position: relative;
-      padding-left: 36px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-    }
-
-    .location-item:nth-child(even) {
-      background: var(--item-hover);
-    }
-
-    .location-item:nth-child(odd) {
-      background: #f0f7fc;
-    }
-
-    body.dark .location-item:nth-child(odd) {
-      background: #1a2f47;
-    }
-
-    body.dark .location-item:nth-child(even) {
-      background: #224060;
-    }
-
-    .location-item.non-matching {
-      opacity: 0.55;
-    }
-
-    .location-item.non-matching:hover {
-      opacity: 0.75;
-    }
-
-    .location-item::before {
-      content: counter(location-counter);
-      position: absolute;
-      left: 8px;
-      top: 14px;
-      background: #0054A4;
-      color: white;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    body.dark .location-item::before {
-      background: #00AEEF;
-      color: #0f172a;
-    }
-
-    .location-list {
-      counter-reset: location-counter;
+      gap: 4px;
+      background: var(--item-bg);
+      color: var(--text-primary);
     }
 
     .location-item:hover {
       background: var(--item-hover);
-      transform: translateX(2px);
+      border-color: var(--btn-border);
+      box-shadow: inset 0 0 0 1px var(--card-border);
+    }
+
+    .location-item.non-matching {
+      opacity: 0.5;
+    }
+
+    .location-item.non-matching:hover {
+      opacity: 0.7;
     }
 
     .location-item.active {
-      background: var(--primary-blue);
+      background: var(--btn-active);
       color: white;
-      border-color: var(--primary-blue);
+      border-color: var(--btn-active);
     }
 
     .location-item.active .location-name,
@@ -471,17 +546,22 @@
     }
 
     .location-item.active .location-website {
-      color: #e0f3f9;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .location-item.active .location-region-badge {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
     }
 
     .location-name {
-      font-weight: 700;
-      font-size: 0.85rem;
+      font-weight: 600;
+      font-size: 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       color: var(--text-primary);
-      gap: 8px;
+      gap: 6px;
     }
 
     .location-name-text {
@@ -489,70 +569,59 @@
     }
 
     .location-region-badge {
-      background: #0054A4;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 3px;
+      background: var(--item-border);
+      color: var(--text-secondary);
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 0.65rem;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    body.dark .location-region-badge {
-      background: #00AEEF;
-      color: #0f172a;
-    }
-
     .location-address {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--text-secondary);
-      line-height: 1.3;
+      line-height: 1.4;
     }
 
     .location-phone {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--text-secondary);
     }
 
     .location-website {
-      font-size: 0.72rem;
-      color: #0054A4;
+      font-size: 0.7rem;
+      color: var(--primary-blue);
       text-decoration: none;
       word-break: break-all;
+      transition: color 0.2s;
     }
 
     body.dark .location-website {
-      color: #00AEEF;
+      color: var(--secondary-blue);
     }
 
-    .region-badge-sm {
-      font-size: 0.65rem;
-      background: var(--item-border);
-      padding: 3px 8px;
-      border-radius: 4px;
-      color: var(--text-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      font-weight: 600;
+    .location-website:hover {
+      color: #003d7a;
+      text-decoration: underline;
     }
 
-    .location-item.active .region-badge-sm {
-      background: rgba(255, 255, 255, 0.25);
-      color: white;
+    body.dark .location-website:hover {
+      color: #0099d8;
     }
 
     .smart-label {
-      background: #0054A4;
+      background: var(--primary-blue);
       backdrop-filter: blur(8px);
       color: white;
       font-size: 10px;
       font-weight: 600;
       padding: 4px 10px;
-      border-radius: 4px;
-      border: 1px solid #0054A4;
+      border-radius: 6px;
+      border: 1px solid var(--primary-blue);
       white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0, 84, 164, 0.3);
       pointer-events: auto;
@@ -568,7 +637,7 @@
     }
 
     .smart-label.highlighted-label {
-      background: linear-gradient(135deg, #d4a500, #f4d03f);
+      background: #d4a500;
       border-color: #d4a500;
       color: #131416;
       animation: pulse-glow 1.5s ease-in-out infinite;
@@ -585,135 +654,182 @@
     }
 
     .smart-label strong {
-      font-weight: 800;
+      font-weight: 700;
       color: white;
       margin-right: 3px;
     }
-    
+
+    .smart-label.highlighted-label strong {
+      color: #131416;
+    }
+
     .no-results {
       text-align: center;
-      padding: 20px;
+      padding: 24px 16px;
       color: var(--text-secondary);
       font-size: 0.8rem;
     }
-    
-    @media (max-width: 780px) {
-      body {
-        padding: 10px;
-      }
-      .map-wrapper {
-        height: 50vh;
-      }
-      .smart-label {
-        font-size: 8px;
-        padding: 2px 6px;
-      }
-      .filter-btn, .action-btn {
-        padding: 5px 12px;
-        font-size: 0.7rem;
-      }
-      .map-fullscreen-btn {
-        padding: 6px 12px;
-        font-size: 0.7rem;
-        bottom: 12px;
-        right: 12px;
-      }
-      .search-box {
-        width: 220px;
-        padding: 6px 14px;
-        font-size: 0.75rem;
-      }
-      .search-mode-toggle-wrapper {
-        gap: 6px;
-      }
-      .search-mode-toggle-label {
-        font-size: 0.7rem;
-      }
-      .search-mode-toggle {
-        width: 48px;
-        height: 24px;
-      }
-      .search-mode-toggle::after {
-        width: 20px;
-        height: 20px;
-      }
-      .search-mode-toggle.active::after {
-        left: 26px;
-      }
-    }
-    
-    .logo-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .logo-header img {
-      max-width: 200px;
-      height: auto;
-      display: inline-block;
-    }
 
     .attribution {
-      text-align: left;
-      font-size: 0.75rem;
+      text-align: center;
+      font-size: 0.7rem;
       color: var(--text-secondary);
-      margin-top: 16px;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      font-family: Courier, monospace;
+      padding: 16px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        max-height: 400px;
+      }
+
+      .filter-row {
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 16px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .header-text h1 {
+        font-size: 1.25rem;
+      }
+
+      .filters-container,
+      .search-section,
+      .main-content {
+        padding: 0 20px;
+      }
+
+      .filters-content,
+      .search-content,
+      .main-layout {
+        padding: 16px 0;
+      }
+
+      .filter-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .search-container {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .search-toggle-wrapper {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .map-wrapper {
+        min-height: 400px;
+      }
+
+      .sidebar {
+        max-height: 350px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>&nbsp;Total Vision & Golden Vision · California</h1>
-  <div class="subhead">🏥 56 Official Locations — Total Vision (47) + Golden Vision (9)</div>
-
-  <div class="controls">
-    <button class="filter-btn active" data-region="all">✨ All (56)</button>
-    <button class="filter-btn" data-region="norcal">🌲 NorCal (15)</button>
-    <button class="filter-btn" data-region="socal">☀️ SoCal (41)</button>
-    <button id="themeToggleBtn" class="action-btn">🌙 Dark Mode</button>
-  </div>
-
-  <div class="controls" id="brandControls">
-    <button class="brand-filter active" data-brand="all">All Locations (56)</button>
-    <button class="brand-filter" data-brand="Total Vision">Total Vision (47)</button>
-    <button class="brand-filter" data-brand="Golden Vision">Golden Vision (9)</button>
-  </div>
-
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by city, location or name...">
-    <div class="search-mode-toggle-wrapper">
-      <span class="search-mode-toggle-label" id="toggleLabel">Filter</span>
-      <button class="search-mode-toggle" id="searchModeToggle"></button>
-      <span class="search-mode-toggle-label">Show All</span>
-    </div>
-  </div>
-
-  <div class="stats" id="statsDisplay">📍 56 locations — Search enabled</div>
-
-  <div class="container">
-    <div class="map-wrapper" id="mapWrapper">
-      <div id="map"></div>
-      <div class="legend">
-        <h4>Legend</h4>
-        <div class="legend-item">
-          <div class="legend-dot total-vision"></div>
-          <span>Total Vision</span>
+  <div class="page-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-content">
+        <div class="header-text">
+          <h1>Total Vision & Golden Vision — California</h1>
+          <div class="subhead">56 Official Locations — Total Vision (47) + Golden Vision (9)</div>
         </div>
-        <div class="legend-item">
-          <div class="legend-dot golden-vision"></div>
-          <span>Golden Vision</span>
+        <div class="header-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark mode">🌙</button>
         </div>
       </div>
-      <button id="mapFullscreenBtn" class="map-fullscreen-btn">⛶ Fullscreen Map</button>
     </div>
-    <div class="sidebar">
-      <h3>📋 Locations <span id="sidebarCount"></span></h3>
-      <div class="location-list" id="locationList"></div>
+
+    <!-- Filters -->
+    <div class="filters-container">
+      <div class="filters-content">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label class="filter-group-label">Region</label>
+            <div class="segmented-controls">
+              <button class="filter-btn active" data-region="all">All (56)</button>
+              <button class="filter-btn" data-region="norcal">NorCal (15)</button>
+              <button class="filter-btn" data-region="socal">SoCal (41)</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="filter-group-label">Brand</label>
+            <div class="segmented-controls" id="brandControls">
+              <button class="brand-filter active" data-brand="all">All (56)</button>
+              <button class="brand-filter" data-brand="Total Vision">Total Vision (47)</button>
+              <button class="brand-filter" data-brand="Golden Vision">Golden Vision (9)</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Search -->
+    <div class="search-section">
+      <div class="search-content">
+        <div class="search-container">
+          <input type="text" id="searchInput" class="search-box" placeholder="Search by city, location or name...">
+          <div class="search-toggle-wrapper">
+            <span class="toggle-label">Filter</span>
+            <button class="search-mode-toggle" id="searchModeToggle"></button>
+            <span class="toggle-label">Show All</span>
+          </div>
+        </div>
+        <div class="search-helper-text" id="searchHelperText">Showing matching locations only</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="main-layout">
+        <div class="map-wrapper" id="mapWrapper">
+          <div id="map"></div>
+          <div class="legend">
+            <h4>Legend</h4>
+            <div class="legend-item">
+              <div class="legend-dot total-vision"></div>
+              <span>Total Vision</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot golden-vision"></div>
+              <span>Golden Vision</span>
+            </div>
+          </div>
+          <button id="mapFullscreenBtn" class="map-fullscreen-btn">⛶ Fullscreen</button>
+        </div>
+        <div class="sidebar">
+          <h3>Locations <span id="sidebarCount">(0)</span></h3>
+          <div class="location-list" id="locationList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="attribution">© 2026 TOTALVISION | SYFX</div>
   </div>
-  <div class="attribution">© 2026&nbsp;TOTALVISION | SYFX&nbsp;</div>
 
   <script>
     // ============================================================
@@ -964,14 +1080,6 @@
       setTimeout(() => updateLabelPositions(), 100);
       renderSidebar(filtered, matches);
 
-      const norcalCount = filtered.filter(l => l.region === 'norcal').length;
-      const socalCount = filtered.filter(l => l.region === 'socal').length;
-      const tvCount = filtered.filter(l => l.brand === 'Total Vision').length;
-      const gvCount = filtered.filter(l => l.brand === 'Golden Vision').length;
-      const searchInfo = currentSearchTerm ? ` — Search: "${currentSearchTerm}"` : '';
-      const brandInfo = currentBrandFilter !== 'all' ? ` — ${currentBrandFilter}` : '';
-      const modeInfo = searchMode === 'show-all' && currentSearchTerm ? ` (${matches.length} matches)` : '';
-      document.getElementById('statsDisplay').innerHTML = `📍 ${filtered.length} locations${brandInfo} (${norcalCount} NorCal, ${socalCount} SoCal)${searchInfo}${modeInfo}`;
     }
     
     function renderSidebar(filtered, matches = []) {
@@ -1069,17 +1177,26 @@
       const saved = localStorage.getItem('tvTheme');
       if (saved === 'dark') {
         document.body.classList.add('dark');
-        document.getElementById('themeToggleBtn').innerHTML = '☀️ Light Mode';
+        document.getElementById('themeToggleBtn').innerHTML = '☀️';
       }
     }
-    
+
     function toggleTheme() {
       document.body.classList.toggle('dark');
       const isDark = document.body.classList.contains('dark');
       localStorage.setItem('tvTheme', isDark ? 'dark' : 'light');
       const btn = document.getElementById('themeToggleBtn');
-      btn.innerHTML = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+      btn.innerHTML = isDark ? '☀️' : '🌙';
       setTimeout(() => map.invalidateSize(), 100);
+    }
+
+    function updateSearchHelperText() {
+      const helperEl = document.getElementById('searchHelperText');
+      if (searchMode === 'filter') {
+        helperEl.textContent = 'Showing matching locations only';
+      } else {
+        helperEl.textContent = 'Highlighting matches on map';
+      }
     }
     
     function toggleMapFullscreen() {
@@ -1107,6 +1224,7 @@
       const toggle = document.getElementById('searchModeToggle');
       const isShowAll = mode === 'show-all';
       toggle.classList.toggle('active', isShowAll);
+      updateSearchHelperText();
       refreshMap();
     }
 
@@ -1152,6 +1270,7 @@
       });
 
       initTheme();
+      updateSearchHelperText();
     }
     
     window.addEventListener('load', init);
