@@ -7,6 +7,15 @@
   <link rel="icon" type="image/png" href="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
   <meta name="msapplication-TileImage" content="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script>
+    // Apply dark mode immediately before page renders
+    (function() {
+      const saved = localStorage.getItem('tvTheme');
+      if (saved !== 'light') {
+        document.documentElement.classList.add('dark-theme-init');
+      }
+    })();
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
   <script>
@@ -57,6 +66,33 @@
     }
 
     body.dark {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1a2f47;
+      --text-primary: #e2e8f0;
+      --text-secondary: #9ca3af;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --btn-bg: transparent;
+      --btn-border: #475569;
+      --btn-text: #cbd5e1;
+      --btn-active: #00AEEF;
+      --item-bg: #1a2f47;
+      --item-hover: #224060;
+      --item-border: #334155;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+      --label-bg: linear-gradient(135deg, rgba(18, 37, 58, 0.96), rgba(12, 25, 45, 0.98));
+      --label-border: rgba(251, 191, 36, 0.6);
+      --search-bg: #1e293b;
+      --search-border: #475569;
+      --search-text: #e2e8f0;
+    }
+
+    html.dark-theme-init body {
+      background: var(--bg-primary);
+    }
+
+    html.dark-theme-init body.dark {
       --bg-primary: #0f172a;
       --bg-secondary: #1a2f47;
       --text-primary: #e2e8f0;
@@ -899,8 +935,8 @@
       }
     }
 
-    // Apply theme immediately
-    initTheme();
+    // Apply theme on load
+    window.addEventListener('DOMContentLoaded', initTheme);
 
     // ============================================================
     // TOTAL VISION: 47 locations (NorCal: 11, SoCal: 36)
@@ -1317,13 +1353,13 @@
       document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
 
       // Search mode toggle
-      const searchModeToggle = document.getElementById('searchModeToggle');
-      searchModeToggle.addEventListener('click', () => {
+      let searchModeToggleBtn = document.getElementById('searchModeToggle');
+      searchModeToggleBtn.addEventListener('click', () => {
         const newMode = searchMode === 'filter' ? 'show-all' : 'filter';
         setSearchMode(newMode);
       });
       // Set initial toggle state to show-all
-      searchModeToggle.classList.add('active');
+      searchModeToggleBtn.classList.add('active');
 
       const searchInput = document.getElementById('searchInput');
       searchInput.addEventListener('input', handleSearch);
