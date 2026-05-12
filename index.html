@@ -1231,7 +1231,10 @@
     
     function initTheme() {
       const saved = localStorage.getItem('tvTheme');
-      if (saved === 'dark') {
+      if (saved === 'light') {
+        document.body.classList.remove('dark');
+      } else {
+        // Default to dark mode
         document.body.classList.add('dark');
       }
     }
