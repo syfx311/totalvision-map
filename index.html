@@ -7,6 +7,15 @@
   <link rel="icon" type="image/png" href="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
   <meta name="msapplication-TileImage" content="https://yourtotalvision.com/wp-content/uploads/2021/04/ms-icon-310x310-1-300x300.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script>
+    // Apply dark mode immediately before page renders
+    (function() {
+      const saved = localStorage.getItem('tvTheme');
+      if (saved !== 'light') {
+        document.documentElement.classList.add('dark-theme-init');
+      }
+    })();
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
   <script>
@@ -14,6 +23,8 @@
   </script>
   <script defer src="/_vercel/speed-insights/script.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
     * {
       margin: 0;
       padding: 0;
@@ -22,6 +33,8 @@
 
     /* Theme Variables */
     :root {
+      --font-heading: 'Roboto', sans-serif;
+      --font-body: 'Roboto', sans-serif;
       --primary-blue: #0054A4;
       --secondary-blue: #00AEEF;
       --dark-navy: #12253A;
@@ -75,11 +88,44 @@
       --search-text: #e2e8f0;
     }
 
+    html.dark-theme-init body {
+      background: var(--bg-primary);
+    }
+
+    html.dark-theme-init body.dark {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1a2f47;
+      --text-primary: #e2e8f0;
+      --text-secondary: #9ca3af;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --btn-bg: transparent;
+      --btn-border: #475569;
+      --btn-text: #cbd5e1;
+      --btn-active: #00AEEF;
+      --item-bg: #1a2f47;
+      --item-hover: #224060;
+      --item-border: #334155;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+      --label-bg: linear-gradient(135deg, rgba(18, 37, 58, 0.96), rgba(12, 25, 45, 0.98));
+      --label-border: rgba(251, 191, 36, 0.6);
+      --search-bg: #1e293b;
+      --search-border: #475569;
+      --search-text: #e2e8f0;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      letter-spacing: 0.1px;
       background: var(--bg-primary);
       color: var(--text-primary);
       transition: background 0.2s ease, color 0.2s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .page-container {
@@ -103,11 +149,13 @@
     }
 
     .header-text h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 500;
+      margin-bottom: 8px;
       color: var(--primary-blue);
-      letter-spacing: -0.3px;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
     }
 
     body.dark .header-text h1 {
@@ -115,9 +163,12 @@
     }
 
     .header-text .subhead {
+      font-family: var(--font-body);
       font-size: 0.875rem;
       color: var(--text-secondary);
       font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1.5;
     }
 
     .header-actions {
@@ -141,6 +192,13 @@
 
     .theme-toggle-btn:hover {
       background: var(--item-hover);
+    }
+
+    .theme-toggle-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      object-fit: contain;
     }
 
     .filters-container {
@@ -172,11 +230,12 @@
     }
 
     .filter-group-label {
+      font-family: var(--font-heading);
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 500;
       text-transform: uppercase;
       color: var(--text-secondary);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       min-width: 70px;
     }
 
@@ -190,6 +249,7 @@
     }
 
     .filter-btn, .brand-filter {
+      font-family: var(--font-heading);
       background: transparent;
       border: none;
       padding: 8px 16px;
@@ -200,6 +260,7 @@
       color: var(--btn-text);
       border-radius: 6px;
       white-space: nowrap;
+      letter-spacing: 0;
     }
 
     .filter-btn:hover, .brand-filter:hover {
@@ -247,15 +308,18 @@
     }
 
     .search-box {
+      font-family: var(--font-body);
       flex: 1;
       background: var(--search-bg);
       border: 1px solid var(--search-border);
       border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 0.95rem;
+      padding: 12px 16px;
+      font-size: 0.9375rem;
       color: var(--search-text);
       outline: none;
       transition: all 0.2s;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
     .search-box:focus {
@@ -282,11 +346,12 @@
     }
 
     .toggle-label {
+      font-family: var(--font-heading);
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       padding: 0 8px;
       white-space: nowrap;
     }
@@ -362,24 +427,36 @@
 
     .legend {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      bottom: 16px;
+      left: 16px;
       z-index: 1000;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       padding: 12px 16px;
       border-radius: 8px;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       font-size: 0.85rem;
     }
 
+    body.dark .legend {
+      background: rgba(30, 41, 59, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
     .legend h4 {
+      font-family: var(--font-heading);
       margin: 0 0 10px 0;
       font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       color: var(--text-secondary);
+    }
+
+    body.dark .legend h4 {
+      color: #1e293b;
     }
 
     .legend-item {
@@ -387,8 +464,15 @@
       align-items: center;
       gap: 8px;
       margin: 8px 0;
-      font-weight: 500;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 0.875rem;
       color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    body.dark .legend-item {
+      color: #1e293b;
     }
 
     .legend-dot {
@@ -417,6 +501,7 @@
       border: none;
       padding: 10px 16px;
       border-radius: 8px;
+      font-family: var(--font-heading);
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
@@ -470,12 +555,14 @@
     }
 
     .sidebar h3 {
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 500;
       margin-bottom: 16px;
       color: var(--text-primary);
       padding: 0;
       border: none;
+      letter-spacing: 0;
     }
 
     .location-list {
@@ -504,6 +591,7 @@
     }
 
     .location-item {
+      font-family: var(--font-body);
       padding: 12px;
       border-radius: 8px;
       cursor: pointer;
@@ -517,6 +605,7 @@
       gap: 4px;
       background: var(--item-bg);
       color: var(--text-primary);
+      line-height: 1.4;
     }
 
     .location-item:hover {
@@ -555,13 +644,15 @@
     }
 
     .location-name {
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-weight: 500;
       font-size: 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       color: var(--text-primary);
       gap: 6px;
+      letter-spacing: 0;
     }
 
     .location-name-text {
@@ -569,35 +660,42 @@
     }
 
     .location-region-badge {
+      font-family: var(--font-heading);
       background: var(--item-border);
       color: var(--text-secondary);
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 0.65rem;
-      font-weight: 600;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
     .location-address {
+      font-family: var(--font-body);
       font-size: 0.7rem;
       color: var(--text-secondary);
       line-height: 1.4;
+      font-weight: 400;
     }
 
     .location-phone {
+      font-family: var(--font-body);
       font-size: 0.7rem;
       color: var(--text-secondary);
+      font-weight: 400;
     }
 
     .location-website {
+      font-family: var(--font-body);
       font-size: 0.7rem;
       color: var(--primary-blue);
       text-decoration: none;
       word-break: break-all;
       transition: color 0.2s;
+      font-weight: 400;
     }
 
     body.dark .location-website {
@@ -614,11 +712,12 @@
     }
 
     .smart-label {
+      font-family: var(--font-heading);
       background: var(--primary-blue);
       backdrop-filter: blur(8px);
       color: white;
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 500;
       padding: 4px 10px;
       border-radius: 6px;
       border: 1px solid var(--primary-blue);
@@ -628,6 +727,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
       z-index: 1000;
+      letter-spacing: 0;
     }
 
     .smart-label:hover {
@@ -664,18 +764,23 @@
     }
 
     .no-results {
+      font-family: var(--font-body);
       text-align: center;
       padding: 24px 16px;
       color: var(--text-secondary);
       font-size: 0.8rem;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
     .attribution {
+      font-family: var(--font-body);
       text-align: center;
       font-size: 0.7rem;
       color: var(--text-secondary);
       padding: 16px;
       border-top: 1px solid var(--card-border);
+      font-weight: 400;
     }
 
     @media (max-width: 1024px) {
@@ -758,7 +863,9 @@
           <div class="subhead">56 Official Locations — Total Vision (47) + Golden Vision (9)</div>
         </div>
         <div class="header-actions">
-          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark mode">🌙</button>
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark mode">
+            <img src="https://cdn.builder.io/api/v1/image/assets%2F8c358e96430c4451949ddae1cc8ed29a%2F81a9c1fe326348a6afc7ee08c6ef8fb8?format=webp&width=800&height=1200" alt="Toggle theme" class="theme-toggle-icon">
+          </button>
         </div>
       </div>
     </div>
@@ -832,6 +939,20 @@
   </div>
 
   <script>
+    // Initialize theme immediately before page renders
+    function initTheme() {
+      const saved = localStorage.getItem('tvTheme');
+      if (saved === 'light') {
+        document.body.classList.remove('dark');
+      } else {
+        // Default to dark mode
+        document.body.classList.add('dark');
+      }
+    }
+
+    // Apply theme on load
+    window.addEventListener('DOMContentLoaded', initTheme);
+
     // ============================================================
     // TOTAL VISION: 47 locations (NorCal: 11, SoCal: 36)
     // GOLDEN VISION: 9 locations (NorCal: 4, SoCal: 5)
@@ -907,7 +1028,7 @@
     let currentFilter = 'all';
     let currentBrandFilter = 'all';
     let currentSearchTerm = '';
-    let searchMode = 'filter'; // 'filter' or 'show-all'
+    let searchMode = 'show-all'; // 'filter' or 'show-all'
     let markersLayer = L.layerGroup();
     let labelsLayer = L.layerGroup();
     let labelObjects = [];
@@ -1173,20 +1294,10 @@
       }
     }
     
-    function initTheme() {
-      const saved = localStorage.getItem('tvTheme');
-      if (saved === 'dark') {
-        document.body.classList.add('dark');
-        document.getElementById('themeToggleBtn').innerHTML = '☀️';
-      }
-    }
-
     function toggleTheme() {
       document.body.classList.toggle('dark');
       const isDark = document.body.classList.contains('dark');
       localStorage.setItem('tvTheme', isDark ? 'dark' : 'light');
-      const btn = document.getElementById('themeToggleBtn');
-      btn.innerHTML = isDark ? '☀️' : '🌙';
       setTimeout(() => map.invalidateSize(), 100);
     }
 
@@ -1257,11 +1368,13 @@
       document.getElementById('mapFullscreenBtn').addEventListener('click', toggleMapFullscreen);
 
       // Search mode toggle
-      const searchModeToggle = document.getElementById('searchModeToggle');
-      searchModeToggle.addEventListener('click', () => {
+      let searchModeToggleBtn = document.getElementById('searchModeToggle');
+      searchModeToggleBtn.addEventListener('click', () => {
         const newMode = searchMode === 'filter' ? 'show-all' : 'filter';
         setSearchMode(newMode);
       });
+      // Set initial toggle state to show-all
+      searchModeToggleBtn.classList.add('active');
 
       const searchInput = document.getElementById('searchInput');
       searchInput.addEventListener('input', handleSearch);
@@ -1269,7 +1382,6 @@
         if (e.key === 'Enter') handleSearch();
       });
 
-      initTheme();
       updateSearchHelperText();
     }
     
