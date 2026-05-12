@@ -1315,6 +1315,8 @@
         const newMode = searchMode === 'filter' ? 'show-all' : 'filter';
         setSearchMode(newMode);
       });
+      // Set initial toggle state to show-all
+      searchModeToggle.classList.add('active');
 
       const searchInput = document.getElementById('searchInput');
       searchInput.addEventListener('input', handleSearch);
@@ -1324,9 +1326,6 @@
 
       initTheme();
       updateSearchHelperText();
-      // Set initial toggle state to show-all
-      const searchModeToggle = document.getElementById('searchModeToggle');
-      searchModeToggle.classList.add('active');
     }
     
     window.addEventListener('load', init);
