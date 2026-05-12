@@ -963,7 +963,7 @@
     let currentFilter = 'all';
     let currentBrandFilter = 'all';
     let currentSearchTerm = '';
-    let searchMode = 'filter'; // 'filter' or 'show-all'
+    let searchMode = 'show-all'; // 'filter' or 'show-all'
     let markersLayer = L.layerGroup();
     let labelsLayer = L.layerGroup();
     let labelObjects = [];
@@ -1324,6 +1324,9 @@
 
       initTheme();
       updateSearchHelperText();
+      // Set initial toggle state to show-all
+      const searchModeToggle = document.getElementById('searchModeToggle');
+      searchModeToggle.classList.add('active');
     }
     
     window.addEventListener('load', init);
