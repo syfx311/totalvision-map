@@ -341,6 +341,53 @@
         const sendButton = document.getElementById('sendButton');
         let isLoading = false;
 
+        const practicesData = [{"id":"11010-bonita","name":"Bonita","location":"180 Otay Lakes Rd Suite 201, Bonita CA, 91902","phone":"619-267-9900","hours":{"monday":"8:00am - 5:00pm","tuesday":"8:00am - 5:00pm","wednesday":"8:00am - 5:00pm","thursday":"8:00am - 5:00pm","friday":"8:00am - 4:00pm","saturday":"8:00am - 12:00pm","sunday":"CLOSED"},"doctors":["Dr. Henry Kikunaga (Mon-Sat)"]},{"id":"13510-camarillo","name":"Camarillo","location":"2380 Las Posas Rd, Camarillo, CA 93010","phone":"805-987-2400","hours":{"monday":"8:30am - 5:00pm","tuesday":"8:30am - 5:30pm","wednesday":"8:30am - 6:00pm","thursday":"9:40am - 5:30pm","friday":"8:30am - 5:00pm","saturday":"8:00am - 2:00pm"},"doctors":["Dr. Martin Schneider","Dr. Victoria Chow","Dr. Jonathan Mak"]},{"id":"13610-campbell","name":"Campbell","location":"338 E. Hamilton Ave Campbell CA 95008","phone":"408-866-2020","hours":{"monday":"9:00am - 6:00pm","tuesday":"9:00am - 6:00pm","wednesday":"9:00am - 6:00pm","thursday":"9:00am - 6:00pm","friday":"9:00am - 5:00pm","saturday":"8:00am - 3:00pm"},"doctors":["Dr. Albert Chang","Dr. Gilbert Ruiz","Dr. Cheng-Yi Tuan"]},{"id":"12210-carlsbad","name":"Carlsbad Plaza","location":"2540 El Camino Real Suite B, Carlsbad, CA 92008","phone":"760-729-9353","hours":{"monday":"9:00am - 6:00pm","tuesday":"9:00am - 6:00pm","wednesday":"9:00am - 5:00pm","thursday":"9:00am - 6:00pm","friday":"9:00am - 5:00pm"},"doctors":["Dr. Vanessa Kashak"]},{"id":"11610-huntington","name":"Huntington Beach","location":"5092 Warner Ave. Huntington Beach, CA 92649","phone":"714-794-3734","hours":{"monday":"9:00am - 5:00pm","tuesday":"9:00am - 5:00pm","wednesday":"9:00am - 5:00pm","thursday":"9:00am - 5:00pm","friday":"9:00am - 5:00pm"},"doctors":["Dr. Paul Blaze","Dr. Michael Dao","Dr. Joseph Ridenour"]},{"id":"12510-chino","name":"Chino Hills","location":"2581 Chino Hills Parkway, Chino Hills CA 91709","phone":"909-393-8378","hours":{"monday":"8:30am - 5:00pm","tuesday":"8:30am - 5:00pm","wednesday":"8:30am - 5:00pm","thursday":"8:30am - 5:00pm","friday":"8:30am - 5:00pm","saturday":"8:30am - 2:00pm"},"doctors":["Dr. Jon Crum"]},{"id":"13210-culver","name":"Culver City","location":"12461 W. Washington Blvd., Los Angeles, CA 90066","phone":"310-390-6287","hours":{"monday":"9:00am - 5:30pm","tuesday":"8:00am - 4:30pm","wednesday":"8:00am - 4:30pm","thursday":"9:00am - 5:30pm","friday":"8:00am - 4:30pm"},"doctors":["Dr. Cynthia Arata","Dr. Irene Yim"]}];
+
+        function generateResponse(userMsg) {
+          const msg = userMsg.toLowerCase();
+          
+          if (msg.includes('hour') || msg.includes('open') || msg.includes('close')) {
+            let response = 'Here are our office hours:\n\n';
+            practicesData.forEach(p => {
+              response += `${p.name}: Mon ${p.hours.monday || 'Closed'}, Sat ${p.hours.saturday || 'Closed'}\n`;
+            });
+            return response + '\nCall us at 1-800-VISION for specific hours.';
+          }
+          
+          if (msg.includes('doctor') || msg.includes('optometrist') || msg.includes('staff')) {
+            let response = 'Our experienced doctors:\n\n';
+            const doctors = new Set();
+            practicesData.forEach(p => {
+              p.doctors.forEach(d => doctors.add(d));
+            });
+            doctors.forEach(d => response += `• ${d}\n`);
+            return response;
+          }
+          
+          if (msg.includes('location') || msg.includes('where') || msg.includes('address')) {
+            let response = 'We have 7 locations:\n\n';
+            practicesData.forEach(p => {
+              response += `${p.name} - ${p.location}\nPhone: ${p.phone}\n\n`;
+            });
+            return response;
+          }
+          
+          if (msg.includes('bonita')) {
+            const loc = practicesData.find(p => p.name.includes('Bonita'));
+            return `${loc.name}\nLocation: ${loc.location}\nPhone: ${loc.phone}\nHours: M-F 8am-5pm, Sat 8am-12pm\nDoctors: ${loc.doctors.join(', ')}`;
+          }
+          
+          if (msg.includes('service') || msg.includes('offer') || msg.includes('exam')) {
+            return 'We offer comprehensive eye exams, contact lens fittings, eyeglasses, and treatment for various eye conditions. Call us for more details!';
+          }
+          
+          if (msg.includes('phone') || msg.includes('call') || msg.includes('contact')) {
+            return 'Call us at 1-800-VISION or visit our website at www.totalvisionllc.com';
+          }
+          
+          return 'Hi! I can help you with information about our locations, hours, doctors, and services. What would you like to know?';
+        }
+
         async function sendMessage(message = null) {
             const userMessage = message || chatInput.value.trim();
             
@@ -362,31 +409,20 @@
             setLoading(true);
 
             try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: getConversationHistory()
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.text();
-                    console.error('[v0] API error response:', errorData);
-                    throw new Error(`API error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                if (data.content) {
-                    addMessage(data.content, 'bot');
-                } else {
-                    throw new Error('No content in response');
-                }
+                // Generate response locally - no API call needed
+                const botResponse = generateResponse(userMessage);
+                setTimeout(() => {
+                    setLoading(false);
+                    addMessage(botResponse, 'bot');
+                    chatInput.focus();
+                }, 500);
             } catch (error) {
-                console.error('[v0] Chat error:', error.message);
-                addMessage('Sorry, I encountered an error. Please try again or contact us at 1-800-VISION or visit any of our locations.', 'bot');
-            } finally {
+                console.error('[v0] Chat error:', error);
                 setLoading(false);
+                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+                chatInput.focus();
+            }
+        }
                 chatInput.focus();
             }
         }
