@@ -371,13 +371,19 @@
                 });
 
                 if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('[v0] API error response:', errorData);
                     throw new Error(`API error: ${response.status}`);
                 }
 
                 const data = await response.json();
-                addMessage(data.content, 'bot');
+                if (data.content) {
+                    addMessage(data.content, 'bot');
+                } else {
+                    throw new Error('No content in response');
+                }
             } catch (error) {
-                console.error('Chat error:', error);
+                console.error('[v0] Chat error:', error.message);
                 addMessage('Sorry, I encountered an error. Please try again or contact us at 1-800-VISION or visit any of our locations.', 'bot');
             } finally {
                 setLoading(false);

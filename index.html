@@ -1766,12 +1766,20 @@
           body: JSON.stringify({ messages: chatWidgetGetHistory() })
         });
 
-        if (!res.ok) throw new Error('API error');
+        if (!res.ok) {
+          const errorData = await res.text();
+          console.error('[v0] API error response:', errorData);
+          throw new Error('API error: ' + res.status);
+        }
         const data = await res.json();
-        chatWidgetAddMessage(data.content, 'bot');
+        if (data.content) {
+          chatWidgetAddMessage(data.content, 'bot');
+        } else {
+          throw new Error('No content in response');
+        }
       } catch (error) {
-        console.error('Widget chat error:', error);
-        chatWidgetAddMessage('Sorry, I encountered an error. Please try again.', 'bot');
+        console.error('[v0] Widget chat error:', error.message);
+        chatWidgetAddMessage('Sorry, I encountered an error. Please try again or contact us at 1-800-VISION or visit any of our locations.', 'bot');
       } finally {
         chatWidgetSetLoading(false);
         chatWidgetInput.focus();
