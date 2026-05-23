@@ -17,13 +17,17 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[v0] Received request body:', req.body);
     const { messages } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
+      console.log('[v0] Invalid messages:', messages);
       return res.status(400).json({ error: 'Messages array required' });
     }
 
+    console.log('[v0] Processing messages:', messages);
     const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
+    console.log('[v0] Last message:', lastMessage);
     let response = '';
 
     if (lastMessage.includes('hour') || lastMessage.includes('open') || lastMessage.includes('close') || lastMessage.includes('time')) {

@@ -1760,18 +1760,24 @@
       chatWidgetSetLoading(true);
 
       try {
+        const history = chatWidgetGetHistory();
+        console.log('[v0] Sending messages:', history);
+        
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: chatWidgetGetHistory() })
+          body: JSON.stringify({ messages: history })
         });
 
+        console.log('[v0] Response status:', res.status);
+        
         if (!res.ok) {
           const errorData = await res.text();
           console.error('[v0] API error response:', errorData);
           throw new Error('API error: ' + res.status);
         }
         const data = await res.json();
+        console.log('[v0] Response data:', data);
         if (data.content) {
           chatWidgetAddMessage(data.content, 'bot');
         } else {
