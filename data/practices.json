@@ -1,0 +1,256 @@
+{
+  "practices": [
+    {
+      "id": "11010-bonita",
+      "name": "Bonita",
+      "location": "180 Otay Lakes Rd Suite 201, Bonita CA, 91902",
+      "phone": "619-267-9900",
+      "fax": "619-267-9910",
+      "email": "bonitapointfamily@totalvisionllc.com",
+      "website": "https://cvopt.com/",
+      "manager": "Claudia Aguirre-Valencia",
+      "district_manager": "Herbert Jerez",
+      "hours": {
+        "monday": "8:00am - 5:00pm",
+        "tuesday": "8:00am - 5:00pm",
+        "wednesday": "8:00am - 5:00pm",
+        "thursday": "8:00am - 5:00pm",
+        "friday": "8:00am - 4:00pm",
+        "saturday": "8:00am - 12:00pm",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Henry Kikunaga (Mon-Sat)", "Dr. Trajano (not practicing anymore)"],
+      "pricing": {
+        "new_patient_self_pay": "$129+",
+        "est_patient_self_pay": "$129+",
+        "medical_exams": "$60-$120",
+        "includes": "Retinal Imaging"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "Dr. Kikunaga can only accommodate 1yr old going up",
+        "Can book Tricare patients if they are dependent or retired",
+        "Offers frame selections and CL pickups",
+        "Office schedules VSP medicaid patients"
+      ]
+    },
+    {
+      "id": "13510-camarillo",
+      "name": "Camarillo",
+      "location": "2380 Las Posas Rd, Camarillo, CA 93010",
+      "phone": "805-987-2400",
+      "fax": "805-389-6692",
+      "email": "Camarillo@totalvisionllc.com",
+      "website": "www.camarillovision.com",
+      "manager": "Cherissa Virginia Schroder",
+      "district_manager": "Kristin Yamauchi",
+      "hours": {
+        "monday": "8:30am - 5:00pm",
+        "tuesday": "8:30am - 5:30pm",
+        "wednesday": "8:30am - 6:00pm",
+        "thursday": "9:40am - 5:30pm",
+        "friday": "8:30am - 5:00pm",
+        "saturday": "8:00am - 2:00pm",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Martin Schneider (Tue-Wed-Thur-Fri-Sat)", "Dr. Victoria Chow (Mon-Wed-Sat)", "Dr. Jonathan Mak (Mon-Tue-Fri)"],
+      "pricing": {
+        "new_patient_self_pay": "$164+",
+        "est_patient_self_pay": "$155+",
+        "medical_exams": "$120-$150",
+        "includes": "Retinal Imaging"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "Not accepting VSP Medicaid/MediCal patients",
+        "Only schedule 2 family members at a time",
+        "Scleral patients need to be last appointment with Dr. Schneider",
+        "Dr. Mak can accommodate 4 yrs old & up",
+        "10 min grace period before required to reschedule"
+      ]
+    },
+    {
+      "id": "13610-campbell",
+      "name": "Campbell",
+      "location": "338 E. Hamilton Ave Campbell CA 95008",
+      "phone": "408-866-2020 Ext: 9147",
+      "fax": "408-370-3937",
+      "email": "Campbell@totalvisionllc.com",
+      "website": "www.familyeyecare.com",
+      "manager": "Tan Truong",
+      "district_manager": "Marisol Guevara",
+      "hours": {
+        "monday": "9:00am - 6:00pm",
+        "tuesday": "9:00am - 6:00pm",
+        "wednesday": "9:00am - 6:00pm",
+        "thursday": "9:00am - 6:00pm",
+        "friday": "9:00am - 5:00pm",
+        "saturday": "8:00am - 3:00pm",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Albert Chang (Mon-Fri, 1 Sat/month)", "Dr. Gilbert Ruiz (Mon-Tue)", "Dr. Cheng-Yi Tuan (Thurs-Sat)", "Dr. Mariel Viano (Wed)", "Dr. Rodney Lum (Mon-Wed-Fri)", "Dr. James Yao (Tue)"],
+      "pricing": {
+        "dilated_new_patient": "$285+",
+        "dilated_est_patient": "$235+",
+        "non_dilated_new_patient": "$164+",
+        "non_dilated_est_patient": "$155+",
+        "contact_lens_new": "$225+",
+        "contact_lens_est": "$216+",
+        "medical_exams": "$136+"
+      },
+      "region": "NorCal",
+      "important_notes": [
+        "Not accepting VSP Medicaid/MediCal patients",
+        "All doctors can accommodate 5 years old and above",
+        "BEE package with photos $150 for Medi-Cal patients",
+        "Dr. Ross has retired - refer to Dr. Lum or Yao",
+        "Dr. Taylor retired May 26 - refer to Dr. Yao or Dr. Yu",
+        "Can book Tricare for dependents, active and retired (no authorization needed)"
+      ]
+    },
+    {
+      "id": "12210-carlsbad",
+      "name": "Carlsbad Plaza",
+      "location": "2540 El Camino Real Suite B, Carlsbad, CA 92008",
+      "phone": "760-729-9353",
+      "fax": "760-729-0583",
+      "email": "drdavidstemleyoffice@totalvisionllc.com",
+      "website": "www.drdavidstemley.com",
+      "manager": "Stacy Hampton",
+      "district_manager": "Herbert Jerez",
+      "hours": {
+        "monday": "9:00am - 6:00pm (No doctor)",
+        "tuesday": "9:00am - 6:00pm",
+        "wednesday": "9:00am - 5:00pm",
+        "thursday": "9:00am - 6:00pm",
+        "friday": "9:00am - 5:00pm",
+        "lunch": "12:30pm - 1:30pm",
+        "saturday": "CLOSED",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Vanessa Kashak (Tue-Fri)"],
+      "pricing": {
+        "new_patient_self_pay": "$164+",
+        "est_patient_self_pay": "$155+",
+        "medical_exams": "$110+",
+        "includes": "Retinal Imaging"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "Dr. Kashak can only accommodate 6 yrs old going up",
+        "Not accepting VSP Medicaid/MediCal patients",
+        "Can book Tricare for dependents and retired patients (no authorization needed)",
+        "We schedule eyewear pickups only"
+      ]
+    },
+    {
+      "id": "11610-huntington",
+      "name": "Huntington Beach (Coast Optometry)",
+      "location": "5092 Warner Ave. Huntington Beach, CA 92649",
+      "phone": "714-794-3734",
+      "fax": "714-846-5778",
+      "email": "coastoptometric@totalvisionllc.com",
+      "website": "www.drblaze.com",
+      "manager": "Jesse Kwan",
+      "district_manager": "Michael Jones",
+      "hours": {
+        "monday": "9:00am - 5:00pm",
+        "tuesday": "9:00am - 5:00pm",
+        "wednesday": "9:00am - 5:00pm",
+        "thursday": "9:00am - 5:00pm",
+        "friday": "9:00am - 5:00pm",
+        "lunch": "12:30pm - 2:00pm (Mon-Wed)",
+        "saturday": "CLOSED",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Paul Blaze (Mon-Tues)", "Dr. Michael Dao (Fri)", "Dr. Joseph Ridenour (Wed-Thur)"],
+      "pricing": {
+        "new_patient_self_pay": "$164+",
+        "est_patient_self_pay": "$155+",
+        "medical_exams": "$125+",
+        "includes": "Retinal Imaging"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "All doctors can accommodate 4 yrs old going up",
+        "Dr. Blaze not accepting new patients",
+        "Not accepting VSP Medicaid/MediCal patients",
+        "Can book Tricare for dependents, active and retired (needs authorization)",
+        "We edge lenses in house",
+        "Specializes in Keratoconus & Therapeutic Patients"
+      ]
+    },
+    {
+      "id": "12510-chino",
+      "name": "Chino Hills",
+      "location": "2581 Chino Hills Parkway, Chino Hills CA 91709",
+      "phone": "909-393-8378",
+      "fax": "909-393-0228",
+      "email": "Chinohills@totalvisionllc.com",
+      "website": "www.drjoncrum.com",
+      "manager": "Lisa Carmona",
+      "district_manager": "Kristin Yamauchi",
+      "hours": {
+        "monday": "8:30am - 5:00pm",
+        "tuesday": "8:30am - 5:00pm",
+        "wednesday": "8:30am - 5:00pm",
+        "thursday": "8:30am - 5:00pm",
+        "friday": "8:30am - 5:00pm",
+        "saturday": "8:30am - 2:00pm (No Doctor)",
+        "lunch": "12:00pm - 1:00pm",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Jon Crum (Mon-Fri)"],
+      "pricing": {
+        "new_patient_self_pay": "$164+",
+        "est_patient_self_pay": "$155+",
+        "medical_exams": "$120+",
+        "contact_lens_fit": "$100-$140"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "Dr. Crum is accepting IEHP, VSP Medicaid/MediCal",
+        "Dr. Crum can accommodate 5 yrs old going up",
+        "Charges $25 for NO SHOW appointments",
+        "Tricare patients should be booked by the office"
+      ]
+    },
+    {
+      "id": "13210-culver",
+      "name": "Culver City",
+      "location": "12461 W. Washington Blvd., Los Angeles, CA 90066",
+      "phone": "310-390-6287",
+      "fax": "310-391-8464",
+      "email": "Culvercity@totalvisionllc.com",
+      "website": "www.totalvisionpacificeyecare.com",
+      "manager": "Emi Hamada",
+      "district_manager": "Kristin Yamauchi",
+      "hours": {
+        "monday": "9:00am - 5:30pm",
+        "tuesday": "8:00am - 4:30pm",
+        "wednesday": "8:00am - 4:30pm (No doctor)",
+        "thursday": "9:00am - 5:30pm",
+        "friday": "8:00am - 4:30pm",
+        "saturday": "8:00am - 12:00pm (2 Saturdays/month)",
+        "lunch": "12:30pm - 1:30pm",
+        "sunday": "CLOSED"
+      },
+      "doctors": ["Dr. Cynthia Arata (Mon-Wed-Sat)", "Dr. Irene Yim (Thurs)"],
+      "pricing": {
+        "comprehensive_exam": "$294+",
+        "medical_exams": "$150+",
+        "includes": "Retinal Imaging"
+      },
+      "region": "SoCal",
+      "important_notes": [
+        "Not accepting VSP Medicaid/MediCal patients",
+        "All doctors accommodate 4 yrs old going up",
+        "No patients over 65 for remote exams",
+        "Virtual exam options available",
+        "Do not book Medicare patients with remote eye exam",
+        "Does not take Tricare insurance",
+        "Offers locker pickup for contact lenses after hours"
+      ]
+    }
+  ]
+}
