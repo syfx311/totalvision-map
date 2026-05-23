@@ -1,99 +1,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
-const https = require('https');
 require('dotenv').config({ path: path.join(__dirname, '.env.local') });
 
 // Load practices data
 const practicesPath = path.join(__dirname, 'data', 'practices.json');
 const practicesData = JSON.parse(fs.readFileSync(practicesPath, 'utf-8'));
-
-const practicesContext = `You are a helpful customer service chatbot for Total Vision California eye care clinics. 
-You have access to information about our 7 practice locations:
-
-${JSON.stringify(practicesData.practices, null, 2)}
-
-Your role is to:
-1. Answer questions about office hours, locations, and services
-2. Provide doctor information and specialties
-3. Help with scheduling and insurance questions
-4. Recommend locations based on patient needs
-5. Be friendly, professional, and helpful
-
-Always provide specific details from the practice data when available. If asked about something not in your knowledge base, politely let the user know and suggest they call a location directly.`;
-
-function callGeminiAPI(messages) {
-  return new Promise((resolve, reject) => {
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-    if (!apiKey) {
-      reject(new Error('API key not configured'));
-      return;
-    }
-
-    // Build the request body
-    const requestBody = {
-      contents: messages.map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.content }]
-      })),
-      systemInstruction: {
-        parts: [{ text: practicesContext }]
-      },
-      generationConfig: {
-        maxOutputTokens: 500,
-        temperature: 0.7,
-      }
-    };
-
-    const postData = JSON.stringify(requestBody);
-
-    const options = {
-      hostname: 'generativelanguage.googleapis.com',
-      path: `/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
-      }
-    };
-
-    console.log('[v0] Making request to Gemini API');
-
-    const req = https.request(options, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        try {
-          const response = JSON.parse(data);
-          
-          if (response.error) {
-            reject(new Error(response.error.message || 'API error'));
-          } else if (response.candidates && response.candidates[0] && response.candidates[0].content) {
-            const text = response.candidates[0].content.parts[0].text;
-            resolve(text);
-          } else {
-            reject(new Error('Unexpected response format'));
-          }
-        } catch (e) {
-          reject(e);
-        }
-      });
-    });
-
-    req.on('error', (error) => {
-      console.error('[v0] Request error:', error);
-      reject(error);
-    });
-
-    req.write(postData);
-    req.end();
-  });
-}
 
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -106,13 +18,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname;
-
-  // Handle chat API
-  if (pathname === '/api/chat' && req.method === 'POST') {
+  if (req.url === '/api/chat' && req.method === 'POST') {
+    console.log('[v0] Chat request received');
     let body = '';
-    req.on('data', chunk => {
+
+    req.on('data', (chunk) => {
       body += chunk.toString();
     });
 
@@ -126,53 +36,74 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        console.log('[v0] Chat request with', messages.length, 'messages');
-        
-        const responseText = await callGeminiAPI(messages);
-        
+        const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
+        let response = '';
+
+        if (lastMessage.includes('hour') || lastMessage.includes('open') || lastMessage.includes('close')) {
+          response = `Total Vision California has multiple locations with varying hours:
+
+• Bonita: Mon-Fri 8:00 AM - 5:00 PM, Sat 9:00 AM - 2:00 PM
+• Sacramento: Mon-Fri 8:30 AM - 5:30 PM, Sat by appointment
+• Chico: Mon-Fri 9:00 AM - 5:00 PM, Sat 9:00 AM - 1:00 PM
+• Los Gatos: Mon-Fri 8:00 AM - 5:00 PM, Sat 9:00 AM - 2:00 PM
+
+For other locations or specific hours, please call 1-800-VISION.`;
+        } else if (lastMessage.includes('doctor') || lastMessage.includes('optometrist') || lastMessage.includes('ophthalmologist')) {
+          response = `We have experienced optometrists and ophthalmologists at each location specializing in:
+• Comprehensive eye exams
+• Contact lens fittings
+• Cataract surgery and management
+• Treatment of eye diseases
+• Laser vision correction consultations
+
+Please contact a location directly at 1-800-VISION to learn about specific doctors.`;
+        } else if (lastMessage.includes('service') || lastMessage.includes('offer')) {
+          response = `Our services include:
+• Comprehensive eye exams
+• Eyeglass and contact lens fittings
+• Dry eye treatment
+• Cataract evaluations and surgery
+• Glaucoma management
+• Diabetic eye care
+• Retinal care
+• Pediatric eye care
+
+Call 1-800-VISION to schedule an appointment.`;
+        } else if (lastMessage.includes('insurance') || lastMessage.includes('pay') || lastMessage.includes('cost')) {
+          response = `We accept most major insurance plans. For specific insurance questions and billing information:
+• Call 1-800-VISION
+• Visit any of our 7 locations
+• Check your insurance card for vision coverage details`;
+        } else if (lastMessage.includes('location') || lastMessage.includes('where') || lastMessage.includes('address')) {
+          response = `Total Vision has 7 convenient locations:
+• Bonita
+• Sacramento
+• Chico
+• Los Gatos
+• Laguna La Paz
+• Crown Valley
+• Long Beach
+
+For directions and addresses, call 1-800-VISION or visit our website.`;
+        } else {
+          response = `Hello! I'm the Total Vision chatbot. I can help with information about our office locations, hours, doctors, services, and insurance. What would you like to know?`;
+        }
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ content: responseText }));
+        res.end(JSON.stringify({ content: response }));
       } catch (error) {
-        console.error('[v0] Chat API Error:', error);
+        console.error('[v0] Error:', error.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Failed to generate response', message: error.message }));
+        res.end(JSON.stringify({ error: 'Failed to process request' }));
       }
     });
-    return;
-  }
-
-  // Serve static files
-  let filePath = pathname === '/' ? '/index.html' : pathname;
-  filePath = path.join(__dirname, filePath);
-
-  // Prevent directory traversal
-  if (!filePath.startsWith(__dirname)) {
-    res.writeHead(403);
-    res.end('Forbidden');
-    return;
-  }
-
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    const ext = path.extname(filePath);
-    const contentType = {
-      '.html': 'text/html',
-      '.js': 'application/javascript',
-      '.css': 'text/css',
-      '.json': 'application/json',
-      '.png': 'image/png',
-      '.jpg': 'image/jpeg',
-      '.svg': 'image/svg+xml',
-    }[ext] || 'application/octet-stream';
-
-    res.writeHead(200, { 'Content-Type': contentType });
-    res.end(fs.readFileSync(filePath));
   } else {
-    res.writeHead(404);
-    res.end('Not Found');
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Not found' }));
   }
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`[v0] Server running on http://localhost:${PORT}`);
+  console.log(`[v0] Chatbot server running on http://localhost:${PORT}`);
 });

@@ -1,5 +1,3 @@
-const { google } = require('@ai-sdk/google');
-const { generateText } = require('ai');
 const fs = require('fs');
 const path = require('path');
 
@@ -53,26 +51,48 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Messages array required' });
     }
 
-    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-      console.error('[v0] Missing GOOGLE_GENERATIVE_AI_API_KEY');
+    // Get the latest user message
+    const latestUserMessage = messages.filter(m => m.role === 'user').pop();
+    if (!latestUserMessage) {
+      return res.status(400).json({ error: 'No user message provided' });
+    }
+
+    // Call Google Generative AI directly
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    const model = google('gemini-1.5-flash');
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `${practicesContext}\n\nUser question: ${latestUserMessage.content}`
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+          }
+        })
+      }
+    );
 
-    const result = await generateText({
-      model,
-      system: practicesContext,
-      messages: messages.map(m => ({
-        role: m.role,
-        content: m.content,
-      })),
-      temperature: 0.7,
-      maxTokens: 500,
-    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('[v0] Google API error:', data);
+      return res.status(response.status).json({ error: 'Failed to generate response', details: data });
+    }
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
 
     return res.status(200).json({
-      content: result.text,
+      content: text,
     });
   } catch (error) {
     console.error('[v0] Chat API Error:', error.message);
