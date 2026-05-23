@@ -2,10 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const { google } = require('@ai-sdk/google');
-const { generateText } = require('ai');
-
-// Load environment variables from .env.local
+const https = require('https');
 require('dotenv').config({ path: path.join(__dirname, '.env.local') });
 
 // Load practices data
@@ -18,36 +15,87 @@ You have access to information about our 7 practice locations:
 ${JSON.stringify(practicesData.practices, null, 2)}
 
 Your role is to:
-1. Answer questions about practice locations, hours, doctors, and pricing
-2. Help patients find the right location and doctor for their needs
-3. Provide contact information and directions
-4. Answer questions about services, insurance, and scheduling policies
+1. Answer questions about office hours, locations, and services
+2. Provide doctor information and specialties
+3. Help with scheduling and insurance questions
+4. Recommend locations based on patient needs
 5. Be friendly, professional, and helpful
 
-When answering:
-- Always provide specific location information when relevant
-- Mention hours clearly
-- Include phone numbers for scheduling
-- Note any insurance restrictions or special policies
-- Be concise but thorough`;
+Always provide specific details from the practice data when available. If asked about something not in your knowledge base, politely let the user know and suggest they call a location directly.`;
 
-const PORT = 3000;
+function callGeminiAPI(messages) {
+  return new Promise((resolve, reject) => {
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
+      reject(new Error('API key not configured'));
+      return;
+    }
 
-// MIME types
-const mimeTypes = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.json': 'application/json',
-  '.css': 'text/css',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.svg': 'image/svg+xml'
-};
+    // Build the request body
+    const requestBody = {
+      contents: messages.map(m => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.content }]
+      })),
+      systemInstruction: {
+        parts: [{ text: practicesContext }]
+      },
+      generationConfig: {
+        maxOutputTokens: 500,
+        temperature: 0.7,
+      }
+    };
+
+    const postData = JSON.stringify(requestBody);
+
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    console.log('[v0] Making request to Gemini API');
+
+    const req = https.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        try {
+          const response = JSON.parse(data);
+          
+          if (response.error) {
+            reject(new Error(response.error.message || 'API error'));
+          } else if (response.candidates && response.candidates[0] && response.candidates[0].content) {
+            const text = response.candidates[0].content.parts[0].text;
+            resolve(text);
+          } else {
+            reject(new Error('Unexpected response format'));
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      console.error('[v0] Request error:', error);
+      reject(error);
+    });
+
+    req.write(postData);
+    req.end();
+  });
+}
 
 const server = http.createServer(async (req, res) => {
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -59,12 +107,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   const parsedUrl = url.parse(req.url, true);
-  let pathname = parsedUrl.pathname;
+  const pathname = parsedUrl.pathname;
 
-  // Handle API route
+  // Handle chat API
   if (pathname === '/api/chat' && req.method === 'POST') {
     let body = '';
-
     req.on('data', chunk => {
       body += chunk.toString();
     });
@@ -75,71 +122,57 @@ const server = http.createServer(async (req, res) => {
 
         if (!messages || !Array.isArray(messages)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Invalid request format' }));
+          res.end(JSON.stringify({ error: 'Messages array required' }));
           return;
         }
 
-        const model = google('gemini-2.0-flash-exp');
-
-        const response = await generateText({
-          model,
-          system: practicesContext,
-          messages: messages.map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
-        });
-
+        console.log('[v0] Chat request with', messages.length, 'messages');
+        
+        const responseText = await callGeminiAPI(messages);
+        
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          content: response.text,
-          usage: {
-            inputTokens: response.usage?.inputTokens,
-            outputTokens: response.usage?.outputTokens
-          }
-        }));
+        res.end(JSON.stringify({ content: responseText }));
       } catch (error) {
-        console.error('Chat API error:', error);
+        console.error('[v0] Chat API Error:', error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          error: 'Failed to process chat request',
-          details: error.message
-        }));
+        res.end(JSON.stringify({ error: 'Failed to generate response', message: error.message }));
       }
     });
     return;
   }
 
   // Serve static files
-  if (pathname === '/') {
-    pathname = '/index.html';
-  }
+  let filePath = pathname === '/' ? '/index.html' : pathname;
+  filePath = path.join(__dirname, filePath);
 
-  let filePath = path.join(__dirname, pathname);
-
-  // Security: prevent directory traversal
+  // Prevent directory traversal
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
   }
 
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
-      res.writeHead(404, { 'Content-Type': 'text/html' });
-      res.end('<h1>404 - Not Found</h1>');
-      return;
-    }
-
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
     const ext = path.extname(filePath);
-    const contentType = mimeTypes[ext] || 'application/octet-stream';
+    const contentType = {
+      '.html': 'text/html',
+      '.js': 'application/javascript',
+      '.css': 'text/css',
+      '.json': 'application/json',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.svg': 'image/svg+xml',
+    }[ext] || 'application/octet-stream';
 
     res.writeHead(200, { 'Content-Type': contentType });
-    fs.createReadStream(filePath).pipe(res);
-  });
+    res.end(fs.readFileSync(filePath));
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
 });
 
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
-  console.log(`Chat page available at http://localhost:${PORT}/chat.html`);
+  console.log(`[v0] Server running on http://localhost:${PORT}`);
 });

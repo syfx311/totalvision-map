@@ -4,6 +4,7 @@
   "description": "Total Vision California locations map",
   "private": true,
   "scripts": {
+    "start": "node server.js",
     "install-deps": "npm install"
   },
   "dependencies": {
