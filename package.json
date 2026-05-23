@@ -4,13 +4,9 @@
   "description": "Total Vision California locations map",
   "private": true,
   "scripts": {
-    "start": "node server.js",
     "install-deps": "npm install"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.79",
-    "@vercel/speed-insights": "^1.0.0",
-    "ai": "^6.0.191",
-    "dotenv": "^17.4.2"
+    "@vercel/speed-insights": "^1.0.0"
   }
 }
