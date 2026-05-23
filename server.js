@@ -5,6 +5,9 @@ const url = require('url');
 const { google } = require('@ai-sdk/google');
 const { generateText } = require('ai');
 
+// Load environment variables from .env.local
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+
 // Load practices data
 const practicesPath = path.join(__dirname, 'data', 'practices.json');
 const practicesData = JSON.parse(fs.readFileSync(practicesPath, 'utf-8'));
@@ -76,7 +79,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const model = google('gemini-1.5-flash');
+        const model = google('gemini-2.0-flash-exp');
 
         const response = await generateText({
           model,
