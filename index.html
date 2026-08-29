@@ -541,6 +541,11 @@
     #map {
       width: 100%;
       height: 100%;
+      background: #dbeafe;
+    }
+
+    body.dark #map {
+      background: #1e3a5f;
     }
 
     .sidebar {
@@ -1235,11 +1240,11 @@
     }
     
     function createLabelMarker(location, latLng, isHighlighted = false) {
-      let shortName = location.name.replace("Total Vision ", "");
-      if (shortName.length > 22) shortName = shortName.substring(0, 20) + "…";
+      const shortName = location.name.replace("Total Vision ", "");
       const highlightClass = isHighlighted ? ' highlighted-label' : '';
       const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
-      const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [null, null], iconAnchor: [0, 0] });
+      const labelWidth = Math.ceil(shortName.length * 5.8 + 38);
+      const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [labelWidth, 26], iconAnchor: [0, 0] });
       const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
       marker.on('click', () => {
         map.flyTo([location.lat, location.lng], 13);
@@ -1450,10 +1455,14 @@
 
     function init() {
       map = L.map('map').setView([36.5, -119.2], 6.4);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 18 }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', maxZoom: 19 }).addTo(map);
       markersLayer.addTo(map);
       labelsLayer.addTo(map);
       refreshMap();
+      setTimeout(() => {
+        map.invalidateSize();
+        scheduleLabelUpdate();
+      }, 0);
       map.on('zoomend', scheduleLabelUpdate);
       map.on('moveend', scheduleLabelUpdate);
 
