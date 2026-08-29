@@ -1301,7 +1301,6 @@
         labelsLayer.addLayer(labelMarker);
         labelObjects.push({ marker: labelMarker, location: loc, latLng: L.latLng(loc.lat, loc.lng) });
       });
-      setTimeout(() => updateLabelPositions(), 100);
       renderSidebar(filtered, matches);
 
     }
@@ -1463,10 +1462,7 @@
       refreshMap();
       setTimeout(() => {
         map.invalidateSize();
-        scheduleLabelUpdate();
       }, 0);
-      map.on('zoomend', scheduleLabelUpdate);
-      map.on('moveend', scheduleLabelUpdate);
 
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
