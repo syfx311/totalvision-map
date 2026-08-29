@@ -718,6 +718,8 @@
 
     .smart-label {
       font-family: var(--font-heading);
+      display: inline-block;
+      width: max-content;
       background: var(--primary-blue);
       backdrop-filter: blur(8px);
       color: white;
@@ -735,26 +737,47 @@
       letter-spacing: 0;
     }
 
+    .smart-label.golden-label {
+      background: #d4a500;
+      border-color: #d4a500;
+      color: #131416;
+      box-shadow: 0 2px 8px rgba(212, 165, 0, 0.3);
+    }
+
+    .smart-label.golden-label strong {
+      color: #131416;
+    }
+
     .smart-label:hover {
       background: #003d7a;
       transform: scale(1.05);
       box-shadow: 0 4px 12px rgba(0, 84, 164, 0.4);
     }
 
+    .smart-label.golden-label:hover {
+      background: #b88f00;
+      box-shadow: 0 4px 12px rgba(212, 165, 0, 0.4);
+    }
+
     .smart-label.highlighted-label {
-      background: #d4a500;
-      border-color: #d4a500;
-      color: #131416;
+      background: #16a34a;
+      border-color: #16a34a;
+      color: white;
       animation: pulse-glow 1.5s ease-in-out infinite;
-      box-shadow: 0 0 12px rgba(212, 165, 0, 0.6);
+      box-shadow: 0 0 12px rgba(22, 163, 74, 0.6);
+    }
+
+    .smart-label.highlighted-label:hover {
+      background: #15803d;
+      border-color: #15803d;
     }
 
     @keyframes pulse-glow {
       0%, 100% {
-        box-shadow: 0 0 12px rgba(212, 165, 0, 0.6);
+        box-shadow: 0 0 12px rgba(22, 163, 74, 0.6);
       }
       50% {
-        box-shadow: 0 0 20px rgba(212, 165, 0, 0.9);
+        box-shadow: 0 0 20px rgba(22, 163, 74, 0.9);
       }
     }
 
@@ -765,7 +788,7 @@
     }
 
     .smart-label.highlighted-label strong {
-      color: #131416;
+      color: white;
     }
 
     .no-results {
@@ -1242,7 +1265,8 @@
     function createLabelMarker(location, latLng, isHighlighted = false) {
       const shortName = location.name.replace("Total Vision ", "");
       const highlightClass = isHighlighted ? ' highlighted-label' : '';
-      const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
+      const brandClass = location.brand === 'Golden Vision' ? ' golden-label' : '';
+      const html = `<div class="smart-label${brandClass}${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
       const labelWidth = Math.ceil(shortName.length * 5.8 + 38);
       const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [labelWidth, 26], iconAnchor: [0, 0] });
       const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
@@ -1299,7 +1323,6 @@
         labelsLayer.addLayer(labelMarker);
         labelObjects.push({ marker: labelMarker, location: loc, latLng: L.latLng(loc.lat, loc.lng) });
       });
-      setTimeout(() => updateLabelPositions(), 100);
       renderSidebar(filtered, matches);
 
     }
@@ -1461,10 +1484,7 @@
       refreshMap();
       setTimeout(() => {
         map.invalidateSize();
-        scheduleLabelUpdate();
       }, 0);
-      map.on('zoomend', scheduleLabelUpdate);
-      map.on('moveend', scheduleLabelUpdate);
 
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
