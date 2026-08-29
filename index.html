@@ -1235,8 +1235,7 @@
     }
     
     function createLabelMarker(location, latLng, isHighlighted = false) {
-      let shortName = location.name.replace("Total Vision ", "");
-      if (shortName.length > 22) shortName = shortName.substring(0, 20) + "…";
+      const shortName = location.name.replace("Total Vision ", "");
       const highlightClass = isHighlighted ? ' highlighted-label' : '';
       const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
       const icon = L.divIcon({ className: 'floating-label', html: html, iconAnchor: [0, 0] });
