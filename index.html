@@ -1243,7 +1243,8 @@
       const shortName = location.name.replace("Total Vision ", "");
       const highlightClass = isHighlighted ? ' highlighted-label' : '';
       const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
-      const icon = L.divIcon({ className: 'floating-label', html: html, iconAnchor: [0, 0] });
+      const labelWidth = Math.ceil(shortName.length * 5.8 + 38);
+      const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [labelWidth, 26], iconAnchor: [0, 0] });
       const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
       marker.on('click', () => {
         map.flyTo([location.lat, location.lng], 13);
