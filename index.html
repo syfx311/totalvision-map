@@ -737,10 +737,26 @@
       letter-spacing: 0;
     }
 
+    .smart-label.golden-label {
+      background: #d4a500;
+      border-color: #d4a500;
+      color: #131416;
+      box-shadow: 0 2px 8px rgba(212, 165, 0, 0.3);
+    }
+
+    .smart-label.golden-label strong {
+      color: #131416;
+    }
+
     .smart-label:hover {
       background: #003d7a;
       transform: scale(1.05);
       box-shadow: 0 4px 12px rgba(0, 84, 164, 0.4);
+    }
+
+    .smart-label.golden-label:hover {
+      background: #b88f00;
+      box-shadow: 0 4px 12px rgba(212, 165, 0, 0.4);
     }
 
     .smart-label.highlighted-label {
@@ -1244,7 +1260,8 @@
     function createLabelMarker(location, latLng, isHighlighted = false) {
       const shortName = location.name.replace("Total Vision ", "");
       const highlightClass = isHighlighted ? ' highlighted-label' : '';
-      const html = `<div class="smart-label${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
+      const brandClass = location.brand === 'Golden Vision' ? ' golden-label' : '';
+      const html = `<div class="smart-label${brandClass}${highlightClass}"><strong>👁️</strong> ${shortName}</div>`;
       const labelWidth = Math.ceil(shortName.length * 5.8 + 38);
       const icon = L.divIcon({ className: 'floating-label', html: html, iconSize: [labelWidth, 26], iconAnchor: [0, 0] });
       const marker = L.marker(latLng, { icon: icon, interactive: true, zIndexOffset: 500 });
